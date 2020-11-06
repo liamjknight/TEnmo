@@ -13,6 +13,8 @@ import com.techelevator.tenmo.dao.AccountDAO;
 import com.techelevator.tenmo.dao.AccountSqlDAO;
 import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.TransferSqlDAO;
+import com.techelevator.tenmo.dao.UserDAO;
+import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Transfer;
 
 @RestController
@@ -22,12 +24,14 @@ public class QueryController {
 	
 	private TransferDAO transferDAO;
 	private AccountDAO accountDAO;
+	private UserDAO userDAO;
 	
 	
 	
-	public QueryController(TransferSqlDAO transferSqlDAO, AccountSqlDAO accountSqlDAO) {
+	public QueryController(TransferSqlDAO transferSqlDAO, AccountSqlDAO accountSqlDAO, UserSqlDAO userSqlDAO) {
 		this.transferDAO = transferSqlDAO;
 		this.accountDAO = accountSqlDAO;
+		this.userDAO = userSqlDAO;
 	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out

@@ -10,16 +10,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.AccountDAO;
+import com.techelevator.tenmo.dao.AccountSqlDAO;
 import com.techelevator.tenmo.dao.TransferDAO;
+import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.model.Transfer;
 
 @RestController
-@PreAuthorize("isAuthorized()")
+@PreAuthorize("isAuthenticated()")
 @RequestMapping(path="/")
 public class QueryController {
 	
 	private TransferDAO transferDAO;
 	private AccountDAO accountDAO;
+	
+	
+	
+	public QueryController(TransferSqlDAO transferSqlDAO, AccountSqlDAO accountSqlDAO) {
+		this.transferDAO = transferSqlDAO;
+		this.accountDAO = accountSqlDAO;
+	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out
 	public BigDecimal getBalance() {
@@ -31,8 +40,8 @@ public class QueryController {
 		return transferDAO.listAllTransfers();
 	}
 	
-	@RequestMapping(path="transfer/{id}", method=RequestMethod.GET)
+	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
 	public Transfer getTransfer(@PathVariable int id) {
-		return null;
+		return transferDAO.listTransferById(id);
 	}
 }

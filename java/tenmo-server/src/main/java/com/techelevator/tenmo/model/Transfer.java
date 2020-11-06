@@ -1,27 +1,52 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
 
 public class Transfer {
 
-	private int transferId;
+	//validation annotations
+	private int id;
 	private int transferType;
 	private int transferStatus;
 	private int fromAccount;
 	private int toAccount;
-	private BigDecimal amountTransfered;
+	private BigDecimal amountTransferred;
+	
+	public Transfer() { }
+
+	public Transfer(int transferId, int transferType, int transferStatus, int fromAccount, int toAccount, BigDecimal amountTransferred) {
+	      this.id = transferId;
+	      this.transferType = transferType;
+	      this.transferStatus = transferStatus;
+	      this.fromAccount = fromAccount;
+	      this.toAccount = toAccount;
+	      this.amountTransferred = amountTransferred;
+	   }
+	
 	
 	@Override
-	public String toString() { //for this we need to to make a logical switch in case the transfer is being sent out or being received.
-		return "ID		From/To			Amount\n" +
-			   "------------------------------\n" ;
+	public String toString() { 
+		//for this we need to to make a logical switch in case the transfer is being sent out or being received.
+		return 
+		"\n------------------------------" +
+		"\n   Transaction Details" +
+		"\n------------------------------" + 
+        "\ntransaction ID: " + id +
+        "\nTransfer Type: " + transferType +
+        "\nTransfer Status: " + transferStatus +
+        "\nSEND "+
+        amountTransferred+
+        " FROM: ~" + fromAccount +
+        "~ TO: ~"+ toAccount+"~"+
+        "\n";
 	}
 	
 	public int getTransferId() {
-		return transferId;
+		return id;
 	}
 	public void setTransferId(int transferId) {
-		this.transferId = transferId;
+		this.id = transferId;
 	}
 	public int getTransferType() {
 		return transferType;
@@ -56,9 +81,9 @@ public class Transfer {
 	}
 
 	public BigDecimal getAmountTransfered() {
-		return amountTransfered;
+		return amountTransferred;
 	}
-	public void setAmountTransfered(BigDecimal amountTransfered) {
-		this.amountTransfered = amountTransfered;
+	public void setAmountTransfered(BigDecimal amountTransferred) {
+		this.amountTransferred = amountTransferred;
 	}
 }

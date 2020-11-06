@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.techelevator.tenmo.dao.AccountDAO;
 import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.model.Transfer;
 
@@ -18,10 +19,11 @@ import com.techelevator.tenmo.model.Transfer;
 public class QueryController {
 	
 	private TransferDAO transferDAO;
+	private AccountDAO accountDAO;
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out
 	public BigDecimal getBalance() {
-		return null;
+		return accountDAO.getBalance();
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)

@@ -36,7 +36,7 @@ public class QueryController {
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out
 	public BigDecimal getBalance() {
-		return accountDAO.getBalance();
+		return accountDAO.getBalance(0);
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)

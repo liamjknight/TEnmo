@@ -25,8 +25,8 @@ public class AccountSqlDAO implements AccountDAO {
 	}
 
 	@Override
-	public BigDecimal getBalance() {
-		return null;
+	public BigDecimal getBalance(int id) {
+        return jdbcTemplate.queryForObject("select balance from accounts where user_id = ?", BigDecimal.class, id);
 	}
 
 	@Override

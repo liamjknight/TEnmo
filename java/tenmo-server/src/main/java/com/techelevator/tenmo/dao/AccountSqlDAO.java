@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.security.UserNotActivatedException;
 
 @Service
 public class AccountSqlDAO implements AccountDAO {
@@ -28,9 +29,17 @@ public class AccountSqlDAO implements AccountDAO {
 
 	@Override
 	public BigDecimal getBalance(User user) {
-        SqlRowSet raw = jdbcTemplate.queryForRowSet("SELECT sum(balance) AS result FROM accounts WHERE user_id = ?;", user.getId());
-        BigDecimal result = raw.getBigDecimal("result");
-        return result;
+		String sql = "SELECT account_id, user_id, balance FROM accounts WHERE user_id = ?";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, Math.toIntExact(user.getId()));
+        if (result.next()) {
+        	BigDecimal balance = result.getBigDecimal(3);
+        	return balance;
+        } else {
+        	throw new UserNotActivatedException("\nThere is an error with you account, or no account.\n");
+        }
+        //****There is no option to create a new account while already logged in.****
+        //^^ if this changes, the sql must change to allow for more than one result
+        //BigDecimal result = raw.getBigDecimal("result");
 	}
 
 	@Override

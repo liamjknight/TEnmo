@@ -1,13 +1,14 @@
 package com.techelevator.tenmo.dao;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
-
-import org.springframework.stereotype.Service;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 @Service
 public class TransferSqlDAO implements TransferDAO {
@@ -18,15 +19,15 @@ public class TransferSqlDAO implements TransferDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 	@Override
-	public List<Transfer> listTransfers(int id) {
-		List<Transfer> results = null;
+	public List<Transfer> listTransfers(User user) {
+		List<Transfer> results = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers " + 
 					 "WHERE account_from = ? OR account_to = ?;";
 		
-		try {
-			results = jdbcTemplate.queryForList(sql, Transfer.class, id, id);
-		}catch(Exception e) {
-			System.out.println(e.getLocalizedMessage());
+		SqlRowSet raw = jdbcTemplate.queryForRowSet(sql, user.getId(), user.getId());
+		
+		while(raw.next()) {
+			results.add(mapToTransfer(raw));
 		}
 		
 		return results;
@@ -34,41 +35,42 @@ public class TransferSqlDAO implements TransferDAO {
 	
 	@Override
 	public Transfer getTransferById(int id) {
-		Transfer result = null;
+		Transfer result = new Transfer();
 		String sql = "SELECT * FROM transfers " +
 					 "WHERE transfer_id = ?;";
-		SqlRowSet toParse = null;	
 		
-		try {
-			toParse = jdbcTemplate.queryForRowSet(sql, Transfer.class, id);
-			if(toParse!=null) {
-				result.setAmountTransfered(toParse.getBigDecimal("amount"));//why will this be null?
-				result.setFromAccount(toParse.getObject("account_from", Account.class));
-				result.setToAccount(toParse.getObject("account_to", Account.class));
-				result.setTransferId(toParse.getInt("transfer_id"));
-				result.setTransferStatus(toParse.getInt("transfer_status"));
-				result.setTransferType(toParse.getInt("transfer_type"));
-			}
-		}catch(Exception e) {
-			System.out.println(e.getLocalizedMessage());
-		}
+		SqlRowSet raw = jdbcTemplate.queryForRowSet(sql, id);
+		
+		result = mapToTransfer(raw);
 		
 		return result;
 	}
 	
 	@Override
-	public Transfer sendTransfer(int id, Transfer transfer) {
+	public Transfer sendTransfer(User user, Transfer transfer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public Transfer requestTransfer(int id, Transfer transfer) {
+	public Transfer requestTransfer(User user, Transfer transfer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public List<Transfer> pendingTransfers(int id) {
+	public List<Transfer> pendingTransfers(User user) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public Transfer mapToTransfer(SqlRowSet input) {
+		Transfer result = new Transfer();
+	
+		result.setAmountTransfered(input.getBigDecimal("amount"));
+		result.setFromAccount(input.getObject("account_from", Account.class));
+		result.setToAccount(input.getObject("account_to", Account.class));
+		result.setTransferId(input.getInt("transfer_id"));
+		result.setTransferStatus(input.getInt("transfer_status"));
+		result.setTransferType(input.getInt("transfer_type"));
+		
+		return result;
 	}
 }

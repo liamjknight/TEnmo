@@ -40,22 +40,22 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out
-	public BigDecimal getBalance(@Valid @RequestParam int id) {
-		return accountDAO.getBalance(0);
+	public BigDecimal getBalance(@RequestBody User user) {
+		return accountDAO.getBalance(user);
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)
-	public List<Transfer> listTransfers(@Valid @RequestParam int id){
-		return transferDAO.listTransfers(id);
+	public List<Transfer> listUserTransfers(@RequestBody User user){
+		return transferDAO.listTransfers(user);
 	}
 	
 	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
-	public Transfer getTransfer(@Valid @PathVariable int id) {
+	public Transfer getTransferById(@RequestBody User user, @Valid @PathVariable int id) {
 		return transferDAO.getTransferById(id);
 	}
 	
 	@RequestMapping(path="transfers/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@Valid @RequestParam int id, @Valid @RequestBody Transfer transfer) {
-		return transferDAO.sendTransfer(id, transfer);
+	public Transfer sendTransfer(@RequestBody User user, @Valid @RequestBody Transfer transfer) {
+		return transferDAO.sendTransfer(user, transfer);
 	}
 }

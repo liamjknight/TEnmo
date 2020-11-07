@@ -2,6 +2,7 @@ package com.techelevator.tenmo.dao;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,8 +24,14 @@ public class AccountSqlDAO implements AccountDAO {
 
 	@Override
 	public List<Account> listAllAccounts() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Account> accounts = new ArrayList<>();
+		String sql = "SELECT user_id, username FROM users";
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
+		while (result.next()) {
+			Account account = mapRowToAccount(result);
+			accounts.add(account);
+		}
+		return accounts;
 	}
 
 	@Override
@@ -46,6 +53,14 @@ public class AccountSqlDAO implements AccountDAO {
 	public Account enactSuccessfulTransfer() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private Account mapRowToAccount(SqlRowSet input) {
+		Account acc = new Account();
+		acc.setAccountId(input.getInt("account_id"));
+		acc.setUserId(input.getInt("user_id"));
+		acc.setBalance(input.getBigDecimal("balance"));
+		return acc;
 	}
 
 }

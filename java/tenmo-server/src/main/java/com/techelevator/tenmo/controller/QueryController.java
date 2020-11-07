@@ -51,7 +51,7 @@ public class QueryController {
 	
 	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
 	public Transfer getTransferById(@RequestBody User user, @Valid @PathVariable int id) {
-		return transferDAO.getTransferById(id);
+		return transferDAO.getTransferById(user, id);
 	}
 	
 	@RequestMapping(path="transfers/", method=RequestMethod.POST)

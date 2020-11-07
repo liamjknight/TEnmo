@@ -3,8 +3,11 @@ package com.techelevator.tenmo.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +19,10 @@ import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @RequestMapping(path="/")
 public class QueryController {
 	
@@ -40,12 +44,17 @@ public class QueryController {
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)
-	public List<Transfer> listTransfers(){
-		return transferDAO.listAllTransfers();
+	public List<Transfer> listTransfers(@Valid @RequestBody User user){
+		return transferDAO.listTransfers(user);
 	}
 	
 	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
 	public Transfer getTransfer(@PathVariable int id) {
-		return transferDAO.listTransferById(id);
+		return transferDAO.getTransferById(id);
+	}
+	
+	@RequestMapping(path="transfers/", method=RequestMethod.POST)
+	public Transfer sendTransfer(@Valid @RequestBody User user, @Valid @RequestBody Transfer transfer) {
+		return transferDAO.sendTransfer(user, transfer);
 	}
 }

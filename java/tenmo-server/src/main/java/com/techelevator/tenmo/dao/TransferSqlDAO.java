@@ -60,11 +60,21 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	@Override
 	public List<Transfer> pendingTransfers(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Transfer> userTransfers = new ArrayList<Transfer>();
+		String sql = "SELECT * FROM transfers " + 
+				 "WHERE (account_from = ? OR account_to = ?) AND transfer_status_id = 1";
+		
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, Math.toIntExact(user.getId()), Math.toIntExact(user.getId()));
+		while(result.next()) {
+			userTransfers.add(mapRowToTransfer(result));
+		}
+		return userTransfers;
 	}
 	public Transfer mapRowToTransfer(SqlRowSet input) {
 		Transfer result = new Transfer();
+		//having trouble with extracting account_from and account_to fields as custom Account object
+		//so for now, we can treat account number as an int, and retrieve account info manually when needed?
+		//which might get annoying once we are adding transfers and determining whether they succeed or fail.
 		//result.setFromAccount(input.getObject("account_from", Account.class));
 		//result.setToAccount(input.getObject("account_to", Account.class));
 		result.setTransferId(input.getInt("transfer_id"));

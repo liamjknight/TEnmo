@@ -49,6 +49,11 @@ public class QueryController {
 		return transferDAO.listTransfers(user);
 	}
 	
+	@RequestMapping(path="transfers/pending/", method=RequestMethod.GET)
+	public List<Transfer> listPendingTransfers(@RequestBody User user){
+		return transferDAO.pendingTransfers(user);
+	}
+	
 	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
 	public Transfer getTransferById(@RequestBody User user, @Valid @PathVariable int id) {
 		return transferDAO.getTransferById(user, id);

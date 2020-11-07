@@ -18,13 +18,13 @@ public class TransferSqlDAO implements TransferDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 	@Override
-	public List<Transfer> listTransfers(User user) {
+	public List<Transfer> listTransfers(int id) {
 		List<Transfer> results = null;
 		String sql = "SELECT * FROM transfers " + 
 					 "WHERE account_from = ? OR account_to = ?;";
 		
 		try {
-			results = jdbcTemplate.queryForList(sql, Transfer.class, user.getId(), user.getId());
+			results = jdbcTemplate.queryForList(sql, Transfer.class, id, id);
 		}catch(Exception e) {
 			System.out.println(e.getLocalizedMessage());
 		}
@@ -57,17 +57,17 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	
 	@Override
-	public Transfer sendTransfer(User user, Transfer transfer) {
+	public Transfer sendTransfer(int id, Transfer transfer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public Transfer requestTransfer(User user, Transfer transfer) {
+	public Transfer requestTransfer(int id, Transfer transfer) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public List<Transfer> pendingTransfers(User user) {
+	public List<Transfer> pendingTransfers(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

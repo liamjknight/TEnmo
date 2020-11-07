@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techelevator.tenmo.dao.AccountDAO;
@@ -39,22 +40,22 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out
-	public BigDecimal getBalance() {
+	public BigDecimal getBalance(@Valid @RequestParam int id) {
 		return accountDAO.getBalance(0);
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)
-	public List<Transfer> listTransfers(@Valid @RequestBody User user){
-		return transferDAO.listTransfers(user);
+	public List<Transfer> listTransfers(@Valid @RequestParam int id){
+		return transferDAO.listTransfers(id);
 	}
 	
 	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
-	public Transfer getTransfer(@PathVariable int id) {
+	public Transfer getTransfer(@Valid @PathVariable int id) {
 		return transferDAO.getTransferById(id);
 	}
 	
 	@RequestMapping(path="transfers/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@Valid @RequestBody User user, @Valid @RequestBody Transfer transfer) {
-		return transferDAO.sendTransfer(user, transfer);
+	public Transfer sendTransfer(@Valid @RequestParam int id, @Valid @RequestBody Transfer transfer) {
+		return transferDAO.sendTransfer(id, transfer);
 	}
 }

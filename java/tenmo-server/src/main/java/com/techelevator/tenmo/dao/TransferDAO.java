@@ -7,11 +7,11 @@ import com.techelevator.tenmo.model.User;
 
 public interface TransferDAO {
 	
-	List<Transfer> listTransfers(User user);
+	List<Transfer> listTransfers(int id);
 	Transfer getTransferById(int id);
-	Transfer sendTransfer(User user, Transfer transfer);
-	Transfer requestTransfer(User user, Transfer transfer);
-	List<Transfer> pendingTransfers(User user);
+	Transfer sendTransfer(int id, Transfer transfer);
+	Transfer requestTransfer(int id, Transfer transfer);
+	List<Transfer> pendingTransfers(int id);
 	//approval method?
 	
 }

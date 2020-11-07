@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Account;
@@ -26,7 +27,9 @@ public class AccountSqlDAO implements AccountDAO {
 
 	@Override
 	public BigDecimal getBalance(int id) {
-        return jdbcTemplate.queryForObject("select balance from accounts where user_id = ?", BigDecimal.class, id);
+        SqlRowSet raw = jdbcTemplate.queryForRowSet("SELECT sum(balance) FROM accounts WHERE user_id = ?;", id);
+        BigDecimal result = new BigDecimal(raw.getDouble("sum"));
+        return result;
 	}
 
 	@Override

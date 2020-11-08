@@ -65,7 +65,7 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@Valid @RequestBody Transfer transfer) {
+	public Transfer sendTransfer(@RequestBody Transfer transfer) {
 		return transferDAO.sendTransfer(transfer);
 	}
 	

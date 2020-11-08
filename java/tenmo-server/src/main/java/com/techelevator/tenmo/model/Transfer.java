@@ -10,15 +10,10 @@ public class Transfer {
 
 	//validation annotations
 	private int id;
-	@NotNull
 	private int transferType;
 	private int transferStatus;
-	@NotNull
 	private int fromAccount;
-	@NotNull
 	private int toAccount;
-	@Positive
-	@NotNull
 	private BigDecimal amountTransferred;
 	
 	public Transfer() { }

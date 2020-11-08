@@ -1,6 +1,18 @@
 package com.techelevator.tenmo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.RestTemplate;
+
+import com.techelevator.models.Auction;
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.Transfer;
+import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
@@ -25,6 +37,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    private RestTemplate restTemplate;
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -73,8 +86,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
+		List<Transfer> results = new ArrayList<Transfer>();
+		HttpEntity<User> entity = makeUserEntity(currentUser.getUser());
 		
+		
+		results = restTemplate.exchange(API_BASE_URL + "transfers/", RequestMethod.GET, entity, List<Transfer>);
 	}
 
 	private void viewPendingRequests() {
@@ -151,4 +167,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
+	
+	 private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+	        return entity;
+	    }
+	 
+	 private HttpEntity<User> makeUserEntity(User user) {
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        HttpEntity<User> entity = new HttpEntity<>(user, headers);
+	        return entity;
+	    }
 }

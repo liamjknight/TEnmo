@@ -41,5 +41,5 @@ public class AccountService {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(authToken);
 		return headers;
-	}
+		}
 	}

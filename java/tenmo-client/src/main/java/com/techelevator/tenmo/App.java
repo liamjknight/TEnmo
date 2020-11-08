@@ -169,17 +169,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		return new UserCredentials(username, password);
 	}
 	
-	 private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+	
+	private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON);
+	        //~~experimenting~~ :/
+	        headers.setBearerAuth(currentUser.getToken());
+	        
 	        HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
 	        return entity;
-	    }
+	}
 	 
-	 private HttpEntity<User> makeUserEntity(User user) {
+	private HttpEntity<User> makeUserEntity(User user) {
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.setContentType(MediaType.APPLICATION_JSON);
 	        HttpEntity<User> entity = new HttpEntity<>(user, headers);
 	        return entity;
-	    }
+	}
 }

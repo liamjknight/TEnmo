@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
-import com.techelevator.models.Auction;
+
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
@@ -80,17 +80,14 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 
-	private void viewCurrentBalance() {
+	private void viewCurrentBalance() {//we call the server and print the result using these methods
+		
 		// TODO Auto-generated method stub
 		
 	}
 
 	private void viewTransferHistory() {
-		List<Transfer> results = new ArrayList<Transfer>();
-		HttpEntity<User> entity = makeUserEntity(currentUser.getUser());
-		
-		
-		results = restTemplate.exchange(API_BASE_URL + "transfers/", RequestMethod.GET, entity, List<Transfer>);
+	//TODO
 	}
 
 	private void viewPendingRequests() {

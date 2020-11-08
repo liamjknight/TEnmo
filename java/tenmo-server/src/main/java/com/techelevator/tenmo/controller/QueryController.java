@@ -59,18 +59,19 @@ public class QueryController {
 		return transferDAO.getTransferById(user, id);
 	}
 	
-	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@RequestBody User user, @Valid @RequestBody Transfer transfer) {
-		return transferDAO.sendTransfer(user, transfer);
+	@RequestMapping(path="transfers/request/", method=RequestMethod.POST)//I need to build out SQL
+	public Transfer requestTransfer(@Valid @RequestBody Transfer transfer) {
+		return transferDAO.requestTransfer(transfer);
 	}
 	
-	@RequestMapping(path="transfers/pending/", method=RequestMethod.POST)
+	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
+	public Transfer sendTransfer(@Valid @RequestBody Transfer transfer) {
+		return transferDAO.sendTransfer(transfer);
+	}
+	
+	@RequestMapping(path="transfers/pending/", method=RequestMethod.PUT)
 	public boolean approveTransfer(@RequestBody int id, @RequestBody boolean accept) {
 		return transferDAO.approveRequest(id, accept);
 	}
 	
-	@RequestMapping(path="transfers/request/", method=RequestMethod.GET)
-	public Transfer requestTransfer(@RequestBody User user, @Valid @RequestBody Transfer transfer) {
-		return transferDAO.requestTransfer(user, transfer);
-	}
 }

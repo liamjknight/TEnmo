@@ -1,22 +1,24 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class Transfer {
 
 	//validation annotations
 	private int id;
-	@NotBlank
+	@NotNull
 	private int transferType;
 	private int transferStatus;
-	@NotBlank
+	@NotNull
 	private int fromAccount;
-	@NotBlank
+	@NotNull
 	private int toAccount;
 	@Positive
-	@NotBlank
+	@NotNull
 	private BigDecimal amountTransferred;
 	
 	public Transfer() { }

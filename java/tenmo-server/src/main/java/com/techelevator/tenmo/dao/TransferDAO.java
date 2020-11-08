@@ -9,10 +9,10 @@ public interface TransferDAO {
 	
 	List<Transfer> listTransfers(User user);
 	Transfer getTransferById(User user, int id);
-	Transfer sendTransfer(User user, Transfer transfer);
-	Transfer requestTransfer(User user, Transfer transfer);
+	Transfer sendTransfer(Transfer transfer);
+	Transfer requestTransfer(Transfer transfer);
 	List<Transfer> pendingTransfers(User user);
 	boolean approveRequest(int id, boolean accept);
-	//approval method?
+	
 	
 }

@@ -50,19 +50,19 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	
 	@Override
-	public Transfer sendTransfer(User user, Transfer transfer) {
+	public Transfer sendTransfer(Transfer transfer) {
 		Transfer result = transfer;
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
 					 			"VALUES(2, ?, ?, ?, ?);";
 		String sqlToCheckAccountBalance = "SELECT balance FROM accounts WHERE user_id = ?;";
 		
-		SqlRowSet accountBalanceRaw = jdbcTemplate.queryForRowSet(sqlToCheckAccountBalance, user.getId());
+		SqlRowSet accountBalanceRaw = jdbcTemplate.queryForRowSet(sqlToCheckAccountBalance, transfer.getFromAccount());
 		
 		if(accountBalanceRaw.next()) {
 			BigDecimal accountBalance = accountBalanceRaw.getBigDecimal("balance");
 			
 			if(accountBalance.compareTo(transfer.getAmountTransfered())>=0) {
-				jdbcTemplate.update(sqlForTransfer, 2, user.getId(), transfer.getToAccount(), transfer.getAmountTransfered());
+				jdbcTemplate.update(sqlForTransfer, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransfered());
 				return result;
 			}else {
 				System.out.println("You do not have the required funds to make this transfer.");
@@ -74,7 +74,7 @@ public class TransferSqlDAO implements TransferDAO {
 		}
 	}
 	@Override
-	public Transfer requestTransfer(User user, Transfer transfer) {
+	public Transfer requestTransfer(Transfer transfer) {
 		return null;
 	}
 	@Override

@@ -12,6 +12,7 @@ public interface TransferDAO {
 	Transfer sendTransfer(User user, Transfer transfer);
 	Transfer requestTransfer(User user, Transfer transfer);
 	List<Transfer> pendingTransfers(User user);
+	boolean approveRequest(int id, boolean accept);
 	//approval method?
 	
 }

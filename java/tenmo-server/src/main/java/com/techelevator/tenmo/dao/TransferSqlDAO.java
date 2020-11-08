@@ -78,6 +78,18 @@ public class TransferSqlDAO implements TransferDAO {
 		return null;
 	}
 	@Override
+	public boolean approveRequest(int id, boolean accept) {
+		String sql = "";//this needs to be a update sql statement with a ? for the transfer id and transfer status.
+		
+		if(accept) {
+			//set transfer to accepted
+			return true;
+		}else {
+			//set transfer to rejected
+			return false;
+		}
+	}
+	@Override
 	public List<Transfer> pendingTransfers(User user) {
 		List<Transfer> userTransfers = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers " + 
@@ -104,4 +116,5 @@ public class TransferSqlDAO implements TransferDAO {
 		result.setAmountTransfered(input.getBigDecimal("amount"));
 		return result;
 	}
+	
 }

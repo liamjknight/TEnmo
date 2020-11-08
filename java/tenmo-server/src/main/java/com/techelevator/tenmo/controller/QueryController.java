@@ -39,7 +39,7 @@ public class QueryController {
 		this.userDAO = userSqlDAO;
 	}
 	
-	@RequestMapping(path="balance/", method=RequestMethod.GET)//build this out
+	@RequestMapping(path="balance/", method=RequestMethod.GET)
 	public BigDecimal getBalance(@RequestBody User user) {
 		return accountDAO.getBalance(user);
 	}
@@ -54,7 +54,7 @@ public class QueryController {
 		return transferDAO.pendingTransfers(user);
 	}
 	
-	@RequestMapping(path="transfers/{id}", method=RequestMethod.GET)
+	@RequestMapping(path="transfers/{id}/", method=RequestMethod.GET)
 	public Transfer getTransferById(@RequestBody User user, @Valid @PathVariable int id) {
 		return transferDAO.getTransferById(user, id);
 	}

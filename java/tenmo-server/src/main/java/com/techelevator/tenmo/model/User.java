@@ -4,8 +4,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class User {
+import javax.validation.constraints.NotBlank;
 
+public class User {
+	
+   @NotBlank
    private Long id;
    private String username;
    private String password;

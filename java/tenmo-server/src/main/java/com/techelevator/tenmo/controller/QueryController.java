@@ -45,7 +45,7 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)
-	public BigDecimal getBalance(@RequestBody String token) {
+	public BigDecimal getBalance(@RequestBody User user) {
 		/*
 		JsonParser parser = JsonParserFactory.getJsonParser();
 		Map<String, ?> tokenData = parser.parseMap(JwtHelper(token).getClaims());

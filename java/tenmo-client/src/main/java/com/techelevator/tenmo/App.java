@@ -86,12 +86,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {//we call the server and print the result using these methods
-		BigDecimal balance = accountService.getBalance(currentUser.getToken());
-		System.out.print("\n"+balance+"\n");
+		System.out.println(accountService.getBalance(currentUser));
 	}
 
 	private void viewTransferHistory() {
-	//TODO
+		
 	}
 
 	private void viewPendingRequests() {

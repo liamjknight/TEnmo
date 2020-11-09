@@ -51,17 +51,22 @@ public class TransferSqlDAO implements TransferDAO {
 	
 	@Override
 	public Transfer sendTransfer(Transfer transfer) {
+		System.out.println("-------------------------------------");
 		Transfer result = transfer;
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
 					 			"VALUES(2, ?, ?, ?, ?);";
 		String sqlToCheckAccountBalance = "SELECT balance FROM accounts WHERE user_id = ?;";
 		
 		SqlRowSet accountBalanceRaw = jdbcTemplate.queryForRowSet(sqlToCheckAccountBalance, transfer.getFromAccount());
+		System.out.println("SqlRowSet= "+accountBalanceRaw);
 		
 		if(accountBalanceRaw.next()) {
 			BigDecimal accountBalance = accountBalanceRaw.getBigDecimal("balance");
+			System.out.println("account Balance, used to check if the transfer can happen:" + accountBalance);
+			System.out.println("input transfer from controller's balance: " + transfer.getAmountTransfered());
 			
 			if(accountBalance.compareTo(transfer.getAmountTransfered())>=0) {
+				System.out.println("input transfer from controller's balance: " + transfer.getAmountTransfered());
 				jdbcTemplate.update(sqlForTransfer, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransfered());
 				return result;
 			}else {

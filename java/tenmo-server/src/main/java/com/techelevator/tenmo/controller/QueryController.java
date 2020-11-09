@@ -2,15 +2,18 @@ package com.techelevator.tenmo.controller;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.hibernate.validator.internal.properties.javabean.JavaBeanHelper;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +30,10 @@ import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 
+import io.jsonwebtoken.Jwt;
+
 @RestController
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RequestMapping(path="/")
 public class QueryController {
 	
@@ -45,21 +50,19 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)
-	public BigDecimal getBalance(@RequestBody User user) {
-		/*
-		JsonParser parser = JsonParserFactory.getJsonParser();
-		Map<String, ?> tokenData = parser.parseMap(JwtHelper(token).getClaims());
-		tokenData.get("VALID_KEY");
-		*/
-		return accountDAO.getBalance(Math.toIntExact(user.getId()));
-		//System.out.print(user.toString());
-		//BigDecimal asdf = new BigDecimal(0.00);
-		//return asdf;
+	public BigDecimal getBalance(HttpServletRequest request) {
+		Principal token = request.getUserPrincipal();
+		//System.out.print(token.hashCode());
+		//System.out.print(token.getName());
+		int id = userDAO.findIdByUsername(token.getName());
+		return accountDAO.getBalance(id);
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)
-	public List<Transfer> listUserTransfers(@RequestBody User user){
-		return transferDAO.listTransfers(user);
+	public List<Transfer> listUserTransfers(HttpServletRequest request){
+		Principal token = request.getUserPrincipal();
+		int id = userDAO.findIdByUsername(token.getName());
+		return transferDAO.listTransfers(id);
 	}
 	
 	@RequestMapping(path="transfers/pending/", method=RequestMethod.GET)

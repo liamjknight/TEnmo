@@ -8,13 +8,13 @@ public class Transfer {
 	private int id;
 	private int transferType;
 	private int transferStatus;
-	private int fromAccount;
-	private int toAccount;
+	private User fromAccount;
+	private User toAccount;
 	private BigDecimal amountTransferred;
 	
 	public Transfer() { }
 
-	public Transfer(int transferId, int transferType, int transferStatus, int fromAccount, int toAccount, BigDecimal amountTransferred) {
+	public Transfer(int transferId, int transferType, int transferStatus, User fromAccount, User toAccount, BigDecimal amountTransferred) {
 	      this.id = transferId;
 	      this.transferType = transferType;
 	      this.transferStatus = transferStatus;
@@ -27,17 +27,41 @@ public class Transfer {
 	@Override
 	public String toString() { 
 		//for this we need to to make a logical switch in case the transfer is being sent out or being received.
-		return 
-		"\n------------------------------" +
+		
+		String transStatus = "";
+		String transType = "";
+		while (this.transferStatus>0&this.transferStatus<4) {
+			if (this.transferStatus==1) {
+				transStatus = "Pending";
+				break;
+			} else if (this.transferStatus==2) {
+				transStatus = "Approved";
+				break;
+			} else  {
+				transType = "Rejected";
+				break;
+			}
+		}
+		while (this.transferType>0&this.transferType<2) {
+			if (this.transferStatus==1) {
+				transType = "Request";
+				break;
+			} else  {
+				transType = "Send";
+				break;
+		}
+}
+		
+		return "\n------------------------------" +
 		"\n   Transaction Details" +
 		"\n------------------------------" + 
         "\ntransaction ID: " + id +
-        "\nTransfer Type: " + transferType +
-        "\nTransfer Status: " + transferStatus +
-        "\nSEND "+
+        " | Transfer Type: " + transType +
+        " | Transfer Status: " + transStatus +
+        "\nTRANSACTION: $"+
         amountTransferred+
-        " FROM: ~" + fromAccount +
-        "~ TO: ~"+ toAccount+"~"+
+        " FROM: ~" + fromAccount.getUsername() +
+        "~ TO: ~"+ toAccount.getUsername()+"~"+
         "\n";
 	}
 	
@@ -63,26 +87,26 @@ public class Transfer {
 		this.transferStatus = transferStatus;
 	}
 
-	public int getFromAccount() {
+	public User getFromAccount() {
 		return fromAccount;
 	}
 
-	public void setFromAccount(int fromAccount) {
+	public void setFromAccount(User fromAccount) {
 		this.fromAccount = fromAccount;
 	}
 
-	public int getToAccount() {
+	public User getToAccount() {
 		return toAccount;
 	}
 
-	public void setToAccount(int toAccount) {
+	public void setToAccount(User toAccount) {
 		this.toAccount = toAccount;
 	}
 
-	public BigDecimal getAmountTransfered() {
+	public BigDecimal getAmountTransferred() {
 		return amountTransferred;
 	}
-	public void setAmountTransfered(BigDecimal amountTransferred) {
+	public void setAmountTransferred(BigDecimal amountTransferred) {
 		this.amountTransferred = amountTransferred;
 	}
 }

@@ -85,12 +85,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 
-	private void viewCurrentBalance() {//we call the server and print the result using these methods
-		System.out.println(accountService.getBalance(currentUser));
+	private void viewCurrentBalance() {
+		System.out.print("\nYour account ballance is $");
+		System.out.print(accountService.getBalance(currentUser));
+		System.out.println("");
 	}
 
 	private void viewTransferHistory() {
-		
+		Transfer[] transfers = accountService.getAllTransfers(currentUser);
+		for(Transfer transfer:transfers) {
+			System.out.print(transfer.toString());
+		}
 	}
 
 	private void viewPendingRequests() {

@@ -12,13 +12,13 @@ public class Transfer {
 	private int id;
 	private int transferType;
 	private int transferStatus;
-	private int fromAccount;
-	private int toAccount;
+	private User fromAccount;
+	private User toAccount;
 	private BigDecimal amountTransferred;
 	
 	public Transfer() { }
 
-	public Transfer(int transferId, int transferType, int transferStatus, int fromAccount, int toAccount, BigDecimal amountTransferred) {
+	public Transfer(int transferId, int transferType, int transferStatus, User fromAccount, User toAccount, BigDecimal amountTransferred) {
 	      this.id = transferId;
 	      this.transferType = transferType;
 	      this.transferStatus = transferStatus;
@@ -67,26 +67,26 @@ public class Transfer {
 		this.transferStatus = transferStatus;
 	}
 
-	public int getFromAccount() {
+	public User getFromAccount() {
 		return fromAccount;
 	}
 
-	public void setFromAccount(int fromAccount) {
+	public void setFromAccount(User fromAccount) {
 		this.fromAccount = fromAccount;
 	}
 
-	public int getToAccount() {
+	public User getToAccount() {
 		return toAccount;
 	}
 
-	public void setToAccount(int toAccount) {
+	public void setToAccount(User toAccount) {
 		this.toAccount = toAccount;
 	}
 
-	public BigDecimal getAmountTransfered() {
+	public BigDecimal getAmountTransferred() {
 		return amountTransferred;
 	}
-	public void setAmountTransfered(BigDecimal amountTransferred) {
+	public void setAmountTransferred(BigDecimal amountTransferred) {
 		this.amountTransferred = amountTransferred;
 	}
 }

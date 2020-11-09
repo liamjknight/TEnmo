@@ -16,17 +16,19 @@ import com.techelevator.tenmo.model.User;
 public class TransferSqlDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
+	
+	
 
     public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 	@Override
-	public List<Transfer> listTransfers(User user) {
+	public List<Transfer> listTransfers(int id) {
 		List<Transfer> userTransfers = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers " + 
 					 "WHERE account_from = ? OR account_to = ?";
 		
-		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, Math.toIntExact(user.getId()), Math.toIntExact(user.getId()));
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id, id);
 		while(result.next()) {
 			userTransfers.add(mapRowToTransfer(result));
 		}
@@ -63,11 +65,11 @@ public class TransferSqlDAO implements TransferDAO {
 		if(accountBalanceRaw.next()) {
 			BigDecimal accountBalance = accountBalanceRaw.getBigDecimal("balance");
 			System.out.println("account Balance, used to check if the transfer can happen:" + accountBalance);
-			System.out.println("input transfer from controller's balance: " + transfer.getAmountTransfered());
+			System.out.println("input transfer from controller's balance: " + transfer.getAmountTransferred());
 			
-			if(accountBalance.compareTo(transfer.getAmountTransfered())>=0) {
-				System.out.println("input transfer from controller's balance: " + transfer.getAmountTransfered());
-				jdbcTemplate.update(sqlForTransfer, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransfered());
+			if(accountBalance.compareTo(transfer.getAmountTransferred())>=0) {
+				System.out.println("input transfer from controller's balance: " + transfer.getAmountTransferred());
+				jdbcTemplate.update(sqlForTransfer, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
 				return result;
 			}else {
 				System.out.println("You do not have the required funds to make this transfer.");
@@ -106,20 +108,28 @@ public class TransferSqlDAO implements TransferDAO {
 		}
 		return userTransfers;
 	}
-	public Transfer mapRowToTransfer(SqlRowSet input) {
+	public Transfer mapRowToTransfer(SqlRowSet input) {		
 		Transfer result = new Transfer();
-		//having trouble with extracting account_from and account_to fields as custom Account object
-		//so for now, we can treat account number as an int, and retrieve account info manually when needed?
-		//which might get annoying once we are adding transfers and determining whether they succeed or fail.
-		//result.setFromAccount(input.getObject("account_from", Account.class));
-		//result.setToAccount(input.getObject("account_to", Account.class));
 		result.setTransferId(input.getInt("transfer_id"));
 		result.setTransferType(input.getInt("transfer_type_id"));
 		result.setTransferStatus(input.getInt("transfer_status_id"));
-		result.setFromAccount(input.getInt("account_from"));
-		result.setToAccount(input.getInt("account_to"));
-		result.setAmountTransfered(input.getBigDecimal("amount"));
+		User from = findUsernameById(input.getInt("account_from"));
+			result.setFromAccount(from);
+		User to = findUsernameById(input.getInt("account_to"));
+			result.setToAccount(to);
+		result.setAmountTransferred(input.getBigDecimal("amount"));
 		return result;
+	}
+	@Override
+	public User findUsernameById(int id) {
+		User user = new User();
+		String sql = "SELECT username FROM users WHERE user_id=?";
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql,id);
+		while(result.next()) {
+			user.setUsername(result.getString(1));
+			user.setId((long)id);
+		}
+		return user;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -41,7 +42,10 @@ public class QueryController {
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)
 	public BigDecimal getBalance(@RequestBody User user) {
-		return accountDAO.getBalance(user);
+		return accountDAO.getBalance(Math.toIntExact(user.getId()));
+		//System.out.print(user.toString());
+		//BigDecimal asdf = new BigDecimal(0.00);
+		//return asdf;
 	}
 
 	@RequestMapping(path="transfers/", method=RequestMethod.GET)

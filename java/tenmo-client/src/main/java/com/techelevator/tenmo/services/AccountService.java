@@ -22,10 +22,11 @@ public class AccountService {
 	
 	public BigDecimal getBalance(AuthenticatedUser user) {
 		HttpHeaders headers = new HttpHeaders();
-		
-		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(user.getToken());
-		HttpEntity entity = new HttpEntity<>(user.getUser(), headers);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String blah;
+		blah="{\"id\":2\n}";
+		HttpEntity<String> entity = new HttpEntity<>(blah, headers);
 		
 		return restTemplate.exchange(BASE_SERVICE_URL + "balance/", HttpMethod.GET, entity, BigDecimal.class).getBody();
 	}

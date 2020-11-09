@@ -8,7 +8,7 @@ import com.techelevator.tenmo.model.User;
 
 public interface AccountDAO {
 	List<Account> listAllAccounts();//probably not needed?
-	BigDecimal getBalance(User user);
+	BigDecimal getBalance(int id);
 	Account enactSuccessfulTransfer();//im... not sure this method should be here? hm..
 	
 }

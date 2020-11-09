@@ -66,13 +66,17 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="transfers/pending/", method=RequestMethod.GET)
-	public List<Transfer> listPendingTransfers(@RequestBody User user){
-		return transferDAO.pendingTransfers(user);
+	public List<Transfer> listPendingTransfers(HttpServletRequest request){
+		Principal token = request.getUserPrincipal();
+		int id = userDAO.findIdByUsername(token.getName());
+		return transferDAO.pendingTransfers(id);
 	}
 	
 	@RequestMapping(path="transfers/{id}/", method=RequestMethod.GET)
-	public Transfer getTransferById(@RequestBody User user, @Valid @PathVariable int id) {
-		return transferDAO.getTransferById(user, id);
+	public Transfer getTransferById(HttpServletRequest request, @Valid @PathVariable int id) {
+		Principal token = request.getUserPrincipal();
+		int userId = userDAO.findIdByUsername(token.getName());
+		return transferDAO.getTransferById(userId, id);
 	}
 	
 	@RequestMapping(path="transfers/request/", method=RequestMethod.POST)//I need to build out SQL

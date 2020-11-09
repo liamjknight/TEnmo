@@ -36,12 +36,12 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	
 	@Override
-	public Transfer getTransferById(User user, int id){
+	public Transfer getTransferById(int userId, int id){
 		Transfer result = new Transfer();
 		String sql = "SELECT * FROM transfers " +
 					 "WHERE transfer_id = ? AND (account_from = ? OR account_to = ?)";
 		
-		SqlRowSet raw = jdbcTemplate.queryForRowSet(sql, id, Math.toIntExact(user.getId()), Math.toIntExact(user.getId()));
+		SqlRowSet raw = jdbcTemplate.queryForRowSet(sql, id, userId, userId);
 		if (raw.next()) {
 			result = mapRowToTransfer(raw);
 			
@@ -97,12 +97,12 @@ public class TransferSqlDAO implements TransferDAO {
 		}
 	}
 	@Override
-	public List<Transfer> pendingTransfers(User user) {
+	public List<Transfer> pendingTransfers(int id) {
 		List<Transfer> userTransfers = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers " + 
 				 "WHERE (account_from = ? OR account_to = ?) AND transfer_status_id = 1";
 		
-		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, Math.toIntExact(user.getId()), Math.toIntExact(user.getId()));
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id, id);
 		while(result.next()) {
 			userTransfers.add(mapRowToTransfer(result));
 		}

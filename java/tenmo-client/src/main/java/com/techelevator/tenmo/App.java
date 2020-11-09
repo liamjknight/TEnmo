@@ -99,9 +99,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
+		Transfer[] transfers = accountService.getPendingRequests(currentUser);
+		for(Transfer transfer:transfers) {
+			System.out.print(transfer.toString());
+		}}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub

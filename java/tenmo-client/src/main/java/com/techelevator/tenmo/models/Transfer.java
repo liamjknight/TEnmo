@@ -38,12 +38,12 @@ public class Transfer {
 				transStatus = "Approved";
 				break;
 			} else  {
-				transType = "Rejected";
+				transStatus = "Rejected";
 				break;
 			}
 		}
-		while (this.transferType>0&this.transferType<2) {
-			if (this.transferStatus==1) {
+		while (this.transferType>0&this.transferType<3) {
+			if (this.transferType==1) {
 				transType = "Request";
 				break;
 			} else  {
@@ -55,13 +55,13 @@ public class Transfer {
 		return "\n------------------------------" +
 		"\n   Transaction Details" +
 		"\n------------------------------" + 
-        "\ntransaction ID: " + id +
-        " | Transfer Type: " + transType +
-        " | Transfer Status: " + transStatus +
+        "\nTransaction ID: " + id +
+        "\nTransfer Type: " + transType +
+        "\nTransfer Status: " + transStatus +
         "\nTRANSACTION: $"+
         amountTransferred+
-        " FROM: ~" + fromAccount.getUsername() +
-        "~ TO: ~"+ toAccount.getUsername()+"~"+
+        " from:" + fromAccount.getUsername().toUpperCase() +
+        " to:"+ toAccount.getUsername().toUpperCase() +
         "\n";
 	}
 	

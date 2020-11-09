@@ -37,6 +37,14 @@ public class AccountService {
 		return response.getBody();
 	}
 	
+	public Transfer[] getPendingRequests(AuthenticatedUser user) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(user.getToken());
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		ResponseEntity<Transfer[]> response = restTemplate.exchange(BASE_SERVICE_URL + "transfers/pending/",  HttpMethod.GET, entity, Transfer[].class);
+		return response.getBody();
+	}
+	
 	public Transfer getTransferId(AuthenticatedUser user, int id) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(user.getToken());

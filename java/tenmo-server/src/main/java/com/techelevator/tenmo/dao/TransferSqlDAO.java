@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 
-import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.TransferNotFoundError;
 import com.techelevator.tenmo.model.User;
 
@@ -16,11 +16,12 @@ import com.techelevator.tenmo.model.User;
 public class TransferSqlDAO implements TransferDAO {
 
 	private JdbcTemplate jdbcTemplate;
-	
+	private AccountDAO accountDAO;
 	
 
-    public TransferSqlDAO(JdbcTemplate jdbcTemplate) {
+    public TransferSqlDAO(JdbcTemplate jdbcTemplate, AccountDAO accountDAO) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountDAO = accountDAO;
     }
 	@Override
 	public List<Transfer> listTransfers(int id) {
@@ -52,36 +53,48 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	
 	@Override
-	public Transfer sendTransfer(Transfer transfer) {
-		System.out.println("-------------------------------------");
-		Transfer result = transfer;
+	public Transfer sendTransfer(TransferDTO transfer) {
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
-					 			"VALUES(2, ?, ?, ?, ?);";
-		String sqlToCheckAccountBalance = "SELECT balance FROM accounts WHERE user_id = ?;";
+					 			"VALUES(?, ?, ?, ?, ?);";
 		
-		SqlRowSet accountBalanceRaw = jdbcTemplate.queryForRowSet(sqlToCheckAccountBalance, transfer.getFromAccount());
-		System.out.println("SqlRowSet= "+accountBalanceRaw);
+		System.out.println(accountDAO.getBalance(1));
 		
-		if(accountBalanceRaw.next()) {
-			BigDecimal accountBalance = accountBalanceRaw.getBigDecimal("balance");
-			System.out.println("account Balance, used to check if the transfer can happen:" + accountBalance);
-			System.out.println("input transfer from controller's balance: " + transfer.getAmountTransferred());
+		
+		if(accountDAO.getBalance(transfer.getFromAccount()).subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0) {
+			int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
 			
-			if(accountBalance.compareTo(transfer.getAmountTransferred())>=0) {
-				System.out.println("input transfer from controller's balance: " + transfer.getAmountTransferred());
-				jdbcTemplate.update(sqlForTransfer, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
-				return result;
+			if(raw!=0) {
+				String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
+				SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
+				Transfer result = new Transfer();
+				
+				while(rowSet.next()) {
+					result = mapRowToTransfer(rowSet);
+				}
+				
+				boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
+				
+				if(successfulTransfer) {
+					return result;
+				}else {
+					return null;
+				}
 			}else {
-				System.out.println("You do not have the required funds to make this transfer.");
-				return new Transfer();
+				System.out.println("Something broke in your transfer!");
+				
+				return null;
 			}
 		}else {
-			System.out.println("No accounts found for this user.");
-			return new Transfer();
+			System.out.println("You do not have the funds to make this transfer.");
+			
+			return null;
 		}
+		
+		
+		
 	}
 	@Override
-	public Transfer requestTransfer(Transfer transfer) {
+	public Transfer requestTransfer(TransferDTO transfer) {
 		return null;
 	}
 	@Override

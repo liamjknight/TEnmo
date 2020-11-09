@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.UserNotActivatedException;
 
@@ -51,9 +52,32 @@ public class AccountSqlDAO implements AccountDAO {
 	}
 
 	@Override
-	public Account enactSuccessfulTransfer() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean enactSuccessfulTransfer(TransferDTO transfer) {
+		String sqlToAdd_ToAccount = "UPDATE accounts SET balance = ? " + 
+						  			"WHERE account_id = ?;";
+		String sqlToSubtract_FromAccount = "UPDATE accounts SET balance = ? " + 
+							   			   "WHERE account_id = ?;";
+		BigDecimal fromAccountTotal = getBalance(transfer.getFromAccount());
+		BigDecimal toAccountTotal = getBalance(transfer.getToAccount());
+		BigDecimal transferAmount = transfer.getAmountTransferred();
+		
+		fromAccountTotal.subtract(transferAmount);
+		toAccountTotal.add(transferAmount);
+		
+		int toWorked = jdbcTemplate.update(sqlToAdd_ToAccount, toAccountTotal, transfer.getToAccount());
+		int fromWorked = jdbcTemplate.update(sqlToSubtract_FromAccount, fromAccountTotal, transfer.getFromAccount());
+		
+		boolean result = true;
+		if(toWorked==0) {
+			System.out.println("Could not update the To_Account.");
+			result = false;
+		}
+		if(fromWorked==0) {
+			System.out.println("Could not update From_Account.");
+			result = false;
+		}
+		
+		return result;
 	}
 	
 	private Account mapRowToAccount(SqlRowSet input) {

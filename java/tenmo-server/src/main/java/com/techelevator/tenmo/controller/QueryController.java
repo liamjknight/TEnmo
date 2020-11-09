@@ -28,6 +28,7 @@ import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.User;
 
 import io.jsonwebtoken.Jwt;
@@ -80,12 +81,12 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="transfers/request/", method=RequestMethod.POST)//I need to build out SQL
-	public Transfer requestTransfer(@Valid @RequestBody Transfer transfer) {
+	public Transfer requestTransfer(@Valid @RequestBody TransferDTO transfer) {
 		return transferDAO.requestTransfer(transfer);
 	}
 	
 	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@RequestBody Transfer transfer) {
+	public Transfer sendTransfer(@RequestBody TransferDTO transfer) {
 		return transferDAO.sendTransfer(transfer);
 	}
 	

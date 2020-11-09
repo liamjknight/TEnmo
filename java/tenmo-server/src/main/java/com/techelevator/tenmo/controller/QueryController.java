@@ -3,9 +3,13 @@ package com.techelevator.tenmo.controller;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.hibernate.validator.internal.properties.javabean.JavaBeanHelper;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +45,12 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="balance/", method=RequestMethod.GET)
-	public BigDecimal getBalance(@RequestBody User user) {
+	public BigDecimal getBalance(@RequestBody String token) {
+		/*
+		JsonParser parser = JsonParserFactory.getJsonParser();
+		Map<String, ?> tokenData = parser.parseMap(JwtHelper(token).getClaims());
+		tokenData.get("VALID_KEY");
+		*/
 		return accountDAO.getBalance(Math.toIntExact(user.getId()));
 		//System.out.print(user.toString());
 		//BigDecimal asdf = new BigDecimal(0.00);

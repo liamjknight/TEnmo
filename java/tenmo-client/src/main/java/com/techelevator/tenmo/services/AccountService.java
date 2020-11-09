@@ -22,12 +22,13 @@ public class AccountService {
 	
 	public BigDecimal getBalance(AuthenticatedUser user) {
 		HttpHeaders headers = new HttpHeaders();
+		System.out.print(user.getToken()+"\n\n\n\n");
+		System.out.println(user.getUser().getId());
 		headers.setBearerAuth(user.getToken());
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		String blah;
-		blah="{\"id\":2\n}";
-		HttpEntity<String> entity = new HttpEntity<>(blah, headers);
-		
+		//String blah;
+		//blah="{\"id\":"+user.getUser().getId()+"\n}";
+		HttpEntity entity = new HttpEntity<>(headers);
 		return restTemplate.exchange(BASE_SERVICE_URL + "balance/", HttpMethod.GET, entity, BigDecimal.class).getBody();
 	}
 	

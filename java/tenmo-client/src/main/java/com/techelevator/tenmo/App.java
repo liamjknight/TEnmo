@@ -96,13 +96,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		for(Transfer transfer:transfers) {
 			System.out.print(transfer.toString());
 		}
+		if (transfers.length<1) {
+			System.out.print("\nIt seems there are no transfers for this account!\n\n");
+		}
 	}
 
 	private void viewPendingRequests() {
 		Transfer[] transfers = accountService.getPendingRequests(currentUser);
 		for(Transfer transfer:transfers) {
 			System.out.print(transfer.toString());
-		}}
+		}
+		if (transfers.length<1) {
+			System.out.print("\nIt seems there are no pending requests for this account!\n\n");
+		}
+}
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub

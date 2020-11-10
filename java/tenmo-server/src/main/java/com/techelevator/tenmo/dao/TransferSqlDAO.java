@@ -59,7 +59,18 @@ public class TransferSqlDAO implements TransferDAO {
 		
 		System.out.println(accountDAO.getBalance(1));
 		
-		
+		/*
+		 * 
+		 * 
+		 * 
+		 * This is what the main focus is server side, all the other required things are dealt with other than 
+		 * the matching method client side. I got it to return the transfer obj, and it seems like it
+		 * wants to use the enactSuccessfulTransfer() method but it doesn't update for whatever reason.
+		 * maybe 
+		 * 
+		 * 
+		 * 
+		 * */
 		if(accountDAO.getBalance(transfer.getFromAccount()).subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0) {
 			int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
 			

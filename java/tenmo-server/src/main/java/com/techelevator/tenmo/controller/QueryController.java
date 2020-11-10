@@ -100,7 +100,7 @@ public class QueryController {
 	 * 
 	 * 
 	 */
-	@RequestMapping(path="transfers/send/", method=RequestMethod.GET)
+	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
 	public Transfer sendTransfer(@RequestBody TransferDTO transfer) {
 		//Principal token = request.getUserPrincipal();
 		//System.out.print(token.getName());

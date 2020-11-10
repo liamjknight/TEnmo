@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.Transfer;
+import com.techelevator.tenmo.models.TransferDTO;
 //import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.User;
 import com.techelevator.tenmo.models.UserCredentials;
@@ -112,6 +113,19 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 }
 
 	private void sendBucks() {
+		User[] sendList = accountService.listAllUsers(currentUser);
+		for(User user:sendList) {
+			System.out.println(user.getId()+"  |  "+user.getUsername());
+		}
+		TransferDTO transfer = new TransferDTO();
+		//prompts
+		int receiver = console.getUserInputInteger("\nPlease enter the user ID to send to : ");
+		String amount = console.getUserInput("\nWhat amount would you like to send?");
+		BigDecimal transferAmount = new BigDecimal(amount);
+		//set transferDTO
+		transfer.setSenderId(Math.toIntExact(currentUser.getUser().getId()));
+		transfer.setReceiverId(receiver);
+		transfer.setSendAmount(transferAmount);
 		System.out.println(accountService.sendTransfer(currentUser, transfer));
 	}
 

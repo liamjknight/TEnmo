@@ -25,44 +25,35 @@ public class Transfer {
 	
 	
 	@Override
-	public String toString() { 
-		//for this we need to to make a logical switch in case the transfer is being sent out or being received.
-		
+	public String toString() { 		
 		String transStatus = "";
 		String transType = "";
-		while (this.transferStatus>0&this.transferStatus<4) {
-			if (this.transferStatus==1) {
-				transStatus = "Pending";
-				break;
-			} else if (this.transferStatus==2) {
-				transStatus = "Approved";
-				break;
-			} else  {
-				transStatus = "Rejected";
-				break;
-			}
-		}
-		while (this.transferType>0&this.transferType<3) {
-			if (this.transferType==1) {
-				transType = "Request";
-				break;
-			} else  {
-				transType = "Send";
-				break;
-		}
-}
+		
+		if (this.transferStatus==1) {transStatus = "Pending";} 
+		else if (this.transferStatus==2) {transStatus = "Approved";} 
+		else  if (this.transferStatus==3){transStatus = "Rejected";} 
+		else {transStatus = "ERROR";}
+		
+		if (this.transferType==1) {transType = "Request";} 
+		else if (this.transferType==2) {transType = "Send";}
+		else {transStatus = "ERROR";}
 		
 		return "\n------------------------------" +
 		"\n   Transaction Details" +
 		"\n------------------------------" + 
-        "\nTransaction ID: " + id +
-        "\nTransfer Type: " + transType +
-        "\nTransfer Status: " + transStatus +
-        "\nTRANSACTION: $"+
-        amountTransferred+
-        " from:" + fromAccount.getUsername().toUpperCase() +
-        " to:"+ toAccount.getUsername().toUpperCase() +
-        "\n";
+        "\nTransaction ID: " + 
+			id +
+        "\nTransfer Type: " + 
+			transType + 
+		"\nTransfer Status: " + 
+			transStatus + 
+		"\nTRANSACTION: $" +
+			amountTransferred +
+		" from:" 
+			+ fromAccount.getUsername().toUpperCase() +
+				" to:"
+					+ toAccount.getUsername().toUpperCase() +
+						"\n";
 	}
 	
 	public int getTransferId() {

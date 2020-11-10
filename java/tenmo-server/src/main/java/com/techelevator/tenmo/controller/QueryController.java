@@ -27,6 +27,7 @@ import com.techelevator.tenmo.dao.TransferDAO;
 import com.techelevator.tenmo.dao.TransferSqlDAO;
 import com.techelevator.tenmo.dao.UserDAO;
 import com.techelevator.tenmo.dao.UserSqlDAO;
+import com.techelevator.tenmo.model.SecureUserDTO;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.User;
@@ -80,14 +81,30 @@ public class QueryController {
 		return transferDAO.getTransferById(userId, id);
 	}
 	
+	@RequestMapping(path="users/",method=RequestMethod.GET)
+	public List<SecureUserDTO> listUsers(HttpServletRequest request){
+		Principal token = request.getUserPrincipal();
+		int id = userDAO.findIdByUsername(token.getName());
+		return accountDAO.listAllAccounts(id);
+	}
+	
 	@RequestMapping(path="transfers/request/", method=RequestMethod.POST)//I need to build out SQL
 	public Transfer requestTransfer(@Valid @RequestBody TransferDTO transfer) {
 		return transferDAO.requestTransfer(transfer);
 	}
 	
+	/*
+	 * 
+	 * BLLLLLLLLLAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+	 * 
+	 * 
+	 * 
+	 */
 	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@RequestBody TransferDTO transfer) {
-		return transferDAO.sendTransfer(transfer);
+	public Transfer sendTransfer(HttpServletRequest request, @RequestBody TransferDTO transfer) {
+		Principal token = request.getUserPrincipal();
+		int userId = userDAO.findIdByUsername(token.getName());
+		return transferDAO.sendTransfer(userId, transfer);
 	}
 	
 	@RequestMapping(path="transfers/pending/", method=RequestMethod.PUT)

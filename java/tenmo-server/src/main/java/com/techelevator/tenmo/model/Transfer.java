@@ -27,24 +27,6 @@ public class Transfer {
 	      this.amountTransfered = amountTransfered;
 	   }
 	
-	
-	@Override
-	public String toString() { 
-		//for this we need to to make a logical switch in case the transfer is being sent out or being received.
-		return 
-		"\n------------------------------" +
-		"\n   Transaction Details" +
-		"\n------------------------------" + 
-        "\ntransaction ID: " + id +
-        "\nTransfer Type: " + transferType +
-        "\nTransfer Status: " + transferStatus +
-        "\nSEND "+
-        amountTransfered+
-        " FROM: ~" + fromAccount +
-        "~ TO: ~"+ toAccount+"~"+
-        "\n";
-	}
-	
 	public int getTransferId() {
 		return id;
 	}

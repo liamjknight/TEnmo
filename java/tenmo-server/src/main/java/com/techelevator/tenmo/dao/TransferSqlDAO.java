@@ -53,51 +53,57 @@ public class TransferSqlDAO implements TransferDAO {
 	}
 	
 	@Override
-	public Transfer sendTransfer(TransferDTO transfer) {
+	public Transfer sendTransfer(int userId, TransferDTO transfer) {
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
 					 			"VALUES(?, ?, ?, ?, ?);";
+		Transfer result = new Transfer();
 		
-		/*
-		 * 
-		 * 
-		 * 
-		 * This is what the main focus is server side, all the other required things are dealt with other than 
-		 * the matching method client side. I got it to return the transfer obj, and it seems like it
-		 * wants to use the enactSuccessfulTransfer() method but it doesn't update for whatever reason.
-		 * maybe 
-		 * 
-		 * 
-		 * 
-		 * */
+		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds
+		// transfer result initialised
+		
 		if(accountDAO.getBalance(transfer.getFromAccount()).subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0) {
+			String sqlTransWrapper = "BEGIN TRANSACTION";
+			jdbcTemplate.update(sqlTransWrapper);
 			int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
 			
-			if(raw!=0) {
-				String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
-				SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
-				Transfer result = new Transfer();
-				
-				while(rowSet.next()) {
-					result = mapRowToTransfer(rowSet);
-				}
-				
-				boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
-				
-				if(successfulTransfer) {
-					return result;
-				}else {
-					return null;
-				}
-			}else {
-				System.out.println("Something broke in your transfer!");
-				
-				return null;
-			}
-		}else {
-			System.out.println("You do not have the funds to make this transfer.");
+			//Initial transfer created in database as part of SQL transaction
+			//Then transfer is copied from the database back to "result" 
+			//successful transfer must be "true" (meaning the money has been moved)
+			//then transfer object is returned and transaction committed.
 			
+				if(raw==1) {
+					String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
+					SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
+					if (rowSet.next()) {
+							result = mapRowToTransfer(rowSet);
+							} 
+						else {
+							System.out.print("ERROR");
+							}
+							//******************************************************************************//
+								boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
+							//******************************************************************************//
+						if(successfulTransfer) {
+							String sqlCommitWrapper = "COMMIT";
+							System.out.print("Transfer successful. Great job");
+							jdbcTemplate.update(sqlCommitWrapper);
+							return result;
+							}
+						else {
+							System.out.print("Unsuccessful Transfer. DELETED. game over.");
+							jdbcTemplate.update("ROLLBACK");
+							return null;
+							}
+			} else {	
+				System.out.println("Something broke in your transfer!");
+				jdbcTemplate.update("ROLLBACK");
+				return null;
+					}	
+		} else {
+			System.out.println("It has come to our attention that you are too poor to bank with us.");
+			jdbcTemplate.update("ROLLBACK");
 			return null;
-		}
+				}
 		
 		
 		

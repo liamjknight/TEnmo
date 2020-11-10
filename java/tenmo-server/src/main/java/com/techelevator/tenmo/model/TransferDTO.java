@@ -8,31 +8,31 @@ import javax.validation.constraints.Positive;
 
 public class TransferDTO {
 	@NotNull
-	Integer toAccount;
+	int toAccount;
 	@NotNull
-	Integer fromAccount;
+	int fromAccount;
 	@NotNull
-	Integer transferType;
+	int transferType;
 	@NotBlank
 	@Positive
 	BigDecimal amountTransferred;
 	
-	public Integer getToAccount() {
+	public int getToAccount() {
 		return toAccount;
 	}
-	public void setToAccount(Integer toAccount) {
+	public void setToAccount(int toAccount) {
 		this.toAccount = toAccount;
 	}
-	public Integer getFromAccount() {
+	public int getFromAccount() {
 		return fromAccount;
 	}
-	public void setFromAccount(Integer fromAccount) {
+	public void setFromAccount(int fromAccount) {
 		this.fromAccount = fromAccount;
 	}
-	public Integer getTransferType() {
+	public int getTransferType() {
 		return transferType;
 	}
-	public void setTransferType(Integer transferType) {
+	public void setTransferType(int transferType) {
 		this.transferType = transferType;
 	}
 	public BigDecimal getAmountTransferred() {

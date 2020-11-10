@@ -10,7 +10,7 @@ public interface TransferDAO {
 	
 	List<Transfer> listTransfers(int id);
 	Transfer getTransferById(int userId, int transId);
-	Transfer sendTransfer(TransferDTO transfer);
+	Transfer sendTransfer(int userId, TransferDTO transfer);
 	Transfer requestTransfer(TransferDTO transfer);
 	List<Transfer> pendingTransfers(int id);
 	boolean approveRequest(int id, boolean accept);

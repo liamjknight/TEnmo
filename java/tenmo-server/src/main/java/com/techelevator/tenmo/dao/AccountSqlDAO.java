@@ -53,10 +53,8 @@ public class AccountSqlDAO implements AccountDAO {
 
 	@Override
 	public boolean enactSuccessfulTransfer(TransferDTO transfer) {
-		String sqlToAdd_ToAccount = "UPDATE accounts SET balance = ? " + 
+		String sql = "UPDATE accounts SET balance = ? " + 
 						  			"WHERE account_id = ?;";
-		String sqlToSubtract_FromAccount = "UPDATE accounts SET balance = ? " + 
-							   			   "WHERE account_id = ?;";
 		BigDecimal fromAccountTotal = getBalance(transfer.getFromAccount());
 		BigDecimal toAccountTotal = getBalance(transfer.getToAccount());
 		BigDecimal transferAmount = transfer.getAmountTransferred();
@@ -64,8 +62,8 @@ public class AccountSqlDAO implements AccountDAO {
 		fromAccountTotal.subtract(transferAmount);
 		toAccountTotal.add(transferAmount);
 		
-		int toWorked = jdbcTemplate.update(sqlToAdd_ToAccount, toAccountTotal, transfer.getToAccount());
-		int fromWorked = jdbcTemplate.update(sqlToSubtract_FromAccount, fromAccountTotal, transfer.getFromAccount());
+		int toWorked = jdbcTemplate.update(sql, toAccountTotal, transfer.getToAccount());
+		int fromWorked = jdbcTemplate.update(sql, fromAccountTotal, transfer.getFromAccount());
 		
 		boolean result = true;
 		if(toWorked==0) {

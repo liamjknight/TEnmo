@@ -101,11 +101,14 @@ public class QueryController {
 	 * 
 	 */
 	@RequestMapping(path="transfers/send/", method=RequestMethod.GET)
-	public Transfer sendTransfer(HttpServletRequest request, @RequestBody TransferDTO transfer) {
-		Principal token = request.getUserPrincipal();
-		System.out.print(token.getName());
-		int userId = userDAO.findIdByUsername(token.getName());
-		return transferDAO.sendTransfer(userId, transfer);
+	public Transfer sendTransfer(@RequestBody TransferDTO transfer) {
+		//Principal token = request.getUserPrincipal();
+		//System.out.print(token.getName());
+		//int userId = userDAO.findIdByUsername(token.getName());
+		//return transferDAO.sendTransfer(userId, transfer);
+		System.out.print(transfer.getFromAccount());
+		System.out.print(transfer.getAmountTransferred());
+		return transferDAO.sendTransfer(transfer.getFromAccount(), transfer);
 	}
 	
 	@RequestMapping(path="transfers/pending/", method=RequestMethod.PUT)

@@ -60,11 +60,12 @@ public class TransferSqlDAO implements TransferDAO {
 		
 		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds
 		// transfer result initialised
-		
+		System.out.print("asfdasdfasdf");
+		int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
+		System.out.print(transfer.getAmountTransferred());
 		if(accountDAO.getBalance(transfer.getFromAccount()).subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0) {
-			String sqlTransWrapper = "BEGIN TRANSACTION";
-			jdbcTemplate.update(sqlTransWrapper);
-			int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
+			//String sqlTransWrapper = "BEGIN TRANSACTION";
+			//jdbcTemplate.update(sqlTransWrapper);
 			
 			//Initial transfer created in database as part of SQL transaction
 			//Then transfer is copied from the database back to "result" 

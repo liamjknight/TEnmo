@@ -35,7 +35,7 @@ import com.techelevator.tenmo.model.User;
 import io.jsonwebtoken.Jwt;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @RequestMapping(path="/")
 public class QueryController {
 	
@@ -100,9 +100,10 @@ public class QueryController {
 	 * 
 	 * 
 	 */
-	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
+	@RequestMapping(path="transfers/send/", method=RequestMethod.GET)
 	public Transfer sendTransfer(HttpServletRequest request, @RequestBody TransferDTO transfer) {
 		Principal token = request.getUserPrincipal();
+		System.out.print(token.getName());
 		int userId = userDAO.findIdByUsername(token.getName());
 		return transferDAO.sendTransfer(userId, transfer);
 	}

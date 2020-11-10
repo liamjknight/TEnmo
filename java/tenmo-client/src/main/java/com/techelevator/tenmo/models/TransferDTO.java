@@ -3,30 +3,30 @@ package com.techelevator.tenmo.models;
 import java.math.BigDecimal;
 
 public class TransferDTO {
-	private int senderId;
-	private int receiverId;
-	private BigDecimal sendAmount;
+	private int fromAccount;
+	private int toAccount;
+	private BigDecimal amountTransferred;
 	
 	public TransferDTO() {}
 	
 	public void setSenderId(int id) {
-		this.senderId = id;
+		this.fromAccount = id;
 	}
 	public int getSenderId() {
-		return this.senderId;
+		return this.fromAccount;
 	}
 	
 	public void setReceiverId(int id) {
-		this.receiverId = id;
+		this.toAccount = id;
 	}
 	public int getReceiverId() {
-		return this.receiverId;
+		return this.toAccount;
 	}
 	
 	public void setSendAmount(BigDecimal sendAmount) {
-		this.sendAmount=sendAmount;
+		this.amountTransferred=sendAmount;
 	}
 	public BigDecimal getSendAmount() {
-		return this.sendAmount;
+		return this.amountTransferred;
 	}
 }

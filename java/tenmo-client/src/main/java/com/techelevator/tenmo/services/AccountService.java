@@ -58,9 +58,10 @@ public class AccountService {
 	public Transfer sendTransfer(AuthenticatedUser user,TransferDTO transfer) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(user.getToken());
+	    headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<TransferDTO> entity = new HttpEntity<>(transfer,headers);
-		ResponseEntity<Transfer> response = restTemplate.exchange(BASE_SERVICE_URL + "transfers/send/", HttpMethod.POST, entity, Transfer.class);
-		return response.getBody();
+		ResponseEntity<Transfer> transferReturn = restTemplate.exchange(BASE_SERVICE_URL + "transfers/send/", HttpMethod.GET, entity, Transfer.class);
+		return transferReturn.getBody();
 	}
 	
 	public User[] listAllUsers(AuthenticatedUser user){

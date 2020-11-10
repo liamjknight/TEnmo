@@ -121,11 +121,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		//prompts
 		int receiver = console.getUserInputInteger("\nPlease enter the user ID to send to : ");
 		String amount = console.getUserInput("\nWhat amount would you like to send?");
+		System.out.println(currentUser.getToken());
+
 		BigDecimal transferAmount = new BigDecimal(amount);
+		System.out.println(currentUser.getToken());
+
 		//set transferDTO
 		transfer.setSenderId(Math.toIntExact(currentUser.getUser().getId()));
 		transfer.setReceiverId(receiver);
 		transfer.setSendAmount(transferAmount);
+		System.out.println(currentUser.getToken());
+		System.out.println(transfer.getReceiverId()+transfer.getSenderId());
 		System.out.println(accountService.sendTransfer(currentUser, transfer));
 	}
 

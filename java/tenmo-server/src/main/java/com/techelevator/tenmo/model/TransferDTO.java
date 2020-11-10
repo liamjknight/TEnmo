@@ -11,8 +11,8 @@ public class TransferDTO {
 	int toAccount;
 	@NotNull
 	int fromAccount;
-	@NotNull
-	int transferType;
+	//@NotNull
+	//int transferType;
 	@NotBlank
 	@Positive
 	BigDecimal amountTransferred;
@@ -29,12 +29,12 @@ public class TransferDTO {
 	public void setFromAccount(int fromAccount) {
 		this.fromAccount = fromAccount;
 	}
-	public int getTransferType() {
-		return transferType;
-	}
-	public void setTransferType(int transferType) {
-		this.transferType = transferType;
-	}
+	//public int getTransferType() {
+	//	return transferType;
+	//}
+	//public void setTransferType(int transferType) {
+	//	this.transferType = transferType;
+	//}
 	public BigDecimal getAmountTransferred() {
 		return amountTransferred;
 	}

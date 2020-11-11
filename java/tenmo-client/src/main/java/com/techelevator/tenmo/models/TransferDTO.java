@@ -9,24 +9,24 @@ public class TransferDTO {
 	
 	public TransferDTO() {}
 	
-	public void setSenderId(int id) {
+	public void setFromAccount(int id) {
 		this.fromAccount = id;
 	}
-	public int getSenderId() {
+	public int getFromAccount() {
 		return this.fromAccount;
 	}
 	
-	public void setReceiverId(int id) {
+	public void setToAccount(int id) {
 		this.toAccount = id;
 	}
-	public int getReceiverId() {
+	public int getToAccount() {
 		return this.toAccount;
 	}
 	
-	public void setSendAmount(BigDecimal sendAmount) {
+	public void setAmountTransferred(BigDecimal sendAmount) {
 		this.amountTransferred=sendAmount;
 	}
-	public BigDecimal getSendAmount() {
+	public BigDecimal getAmountTransferred() {
 		return this.amountTransferred;
 	}
 }

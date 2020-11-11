@@ -14,17 +14,17 @@ public class Transfer {
 	private int transferStatus;
 	private User fromAccount;
 	private User toAccount;
-	private BigDecimal amountTransfered;
+	private BigDecimal amountTransferred;
 	
 	public Transfer() { }
 
-	public Transfer(int transferId, int transferType, int transferStatus, User fromAccount, User toAccount, BigDecimal amountTransfered) {
+	public Transfer(int transferId, int transferType, int transferStatus, User fromAccount, User toAccount, BigDecimal amountTransferred) {
 	      this.id = transferId;
 	      this.transferType = transferType;
 	      this.transferStatus = transferStatus;
 	      this.fromAccount = fromAccount;
 	      this.toAccount = toAccount;
-	      this.amountTransfered = amountTransfered;
+	      this.amountTransferred = amountTransferred;
 	   }
 	
 	public int getTransferId() {
@@ -66,9 +66,9 @@ public class Transfer {
 	}
 
 	public BigDecimal getAmountTransferred() {
-		return amountTransfered;
+		return amountTransferred;
 	}
-	public void setAmountTransferred(BigDecimal amountTransfered) {
-		this.amountTransfered = amountTransfered;
+	public void setAmountTransferred(BigDecimal amountTransferred) {
+		this.amountTransferred = amountTransferred;
 	}
 }

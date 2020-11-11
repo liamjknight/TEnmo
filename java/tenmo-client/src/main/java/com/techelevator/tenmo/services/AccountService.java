@@ -56,20 +56,21 @@ public class AccountService {
 	}
 	
 	public Transfer sendTransfer(AuthenticatedUser user,TransferDTO transfer) {
-		Transfer transferReturn = new Transfer();
+		Transfer transferReturn;
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(user.getToken());
-	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    //headers.setContentType(MediaType.APPLICATION_JSON);
 	    if (transfer == null) {
-	    	System.out.print("ERROR");
+	    	System.out.print("EsfsdfsdfsdfRROR");
 	    }
 		HttpEntity<TransferDTO> entity = new HttpEntity<>(transfer,headers);
 		try {
 		transferReturn = restTemplate.postForObject(BASE_SERVICE_URL + "transfers/send/", entity, Transfer.class);
+		return transferReturn;
 		} catch (Exception e){
 			System.out.print("ERROR");
+			return null;
 		}
-		return transferReturn;
 	}
 	
 	public User[] listAllUsers(AuthenticatedUser user){

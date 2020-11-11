@@ -127,11 +127,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		System.out.println(currentUser.getToken());
 
 		//set transferDTO
-		transfer.setSenderId(Math.toIntExact(currentUser.getUser().getId()));
-		transfer.setReceiverId(receiver);
-		transfer.setSendAmount(transferAmount);
+		transfer.setFromAccount(Math.toIntExact(currentUser.getUser().getId()));
+		transfer.setToAccount(receiver);
+		transfer.setAmountTransferred(transferAmount);
 		System.out.println(currentUser.getToken());
-		System.out.println(transfer.getReceiverId()+transfer.getSenderId());
 		System.out.println(accountService.sendTransfer(currentUser, transfer));
 	}
 

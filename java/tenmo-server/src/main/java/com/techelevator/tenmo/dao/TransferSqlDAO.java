@@ -54,16 +54,14 @@ public class TransferSqlDAO implements TransferDAO {
 	
 	@Override
 	public Transfer sendTransfer(int userId, TransferDTO transfer) {
+		
 		//if they are sending then 2, if its a request, 1
 		int requestSend = (userId==transfer.getFromAccount()?2:1);
-		
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
 					 			"VALUES(?, ?, ?, ?, ?);";
 		Transfer result = new Transfer();
 		
-		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds
-		// transfer result initialised
-		
+		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds		
 		//true if sufficient
 		boolean sufficientFunds = accountDAO.getBalance(transfer.getFromAccount()).
 				subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0;
@@ -90,14 +88,12 @@ public class TransferSqlDAO implements TransferDAO {
 				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
 					else {System.out.print("ERROR");}
 						//******************************************************************************//
-							boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
+							//boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
 						//******************************************************************************//
-								if(successfulTransfer) {return result;}
-									else {return null;}
+								//if(successfulTransfer) {return result;}
+									//else {return null;}
 					} else {return null;}	
-		}
-			return null;
-				}
+		}return null;}
 		
 
 	@Override

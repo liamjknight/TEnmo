@@ -60,13 +60,9 @@ public class TransferSqlDAO implements TransferDAO {
 		
 		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds
 		// transfer result initialised
-		System.out.print("asfdasdfasdf");
-		int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
-		System.out.print(transfer.getAmountTransferred());
 		if(accountDAO.getBalance(transfer.getFromAccount()).subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0) {
-			//String sqlTransWrapper = "BEGIN TRANSACTION";
-			//jdbcTemplate.update(sqlTransWrapper);
-			
+			int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
+
 			//Initial transfer created in database as part of SQL transaction
 			//Then transfer is copied from the database back to "result" 
 			//successful transfer must be "true" (meaning the money has been moved)
@@ -85,24 +81,15 @@ public class TransferSqlDAO implements TransferDAO {
 								boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
 							//******************************************************************************//
 						if(successfulTransfer) {
-							String sqlCommitWrapper = "COMMIT";
-							System.out.print("Transfer successful. Great job");
-							jdbcTemplate.update(sqlCommitWrapper);
 							return result;
 							}
 						else {
-							System.out.print("Unsuccessful Transfer. DELETED. game over.");
-							jdbcTemplate.update("ROLLBACK");
 							return null;
 							}
 			} else {	
-				System.out.println("Something broke in your transfer!");
-				jdbcTemplate.update("ROLLBACK");
 				return null;
 					}	
 		} else {
-			System.out.println("It has come to our attention that you are too poor to bank with us.");
-			jdbcTemplate.update("ROLLBACK");
 			return null;
 				}
 		

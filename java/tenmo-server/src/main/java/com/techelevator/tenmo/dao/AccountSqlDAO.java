@@ -64,13 +64,14 @@ public class AccountSqlDAO implements AccountDAO {
 		
 		fromAccountTotal = fromAccountTotal.subtract(transferAmount);
 		toAccountTotal = toAccountTotal.add(transferAmount);
-		
+		jdbcTemplate.update("BEGIN TRANSACTION");
 		try {
 			int fromWorked = jdbcTemplate.update(sql, fromAccountTotal, transfer.getFromAccount());
 			int toWorked = jdbcTemplate.update(sql, toAccountTotal, transfer.getToAccount());
 			
 			if (fromWorked==1&toWorked==1) {
 				result = true;
+				jdbcTemplate.update("COMMIT");
 			}
 		} catch (Exception e) {
 			System.out.print("ERROR");

@@ -106,6 +106,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		Transfer[] transfers = accountService.getPendingRequests(currentUser);
 		for(Transfer transfer:transfers) {
 			System.out.print(transfer.toString());
+			if(transfer.getFromAccount().getId()==currentUser.getUser().getId()) {// this checks if the account the money comes from is the same as the current account looking aat the pending transfer so the requester cannot confirm their own request.
+				//here is where we can approve or deny transfers
+				System.out.println("Would you like to confirm or deny this pending transfer?");
+				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request"});
+				
+				if(choice.equals("Confirm Request")) {
+					//here we have to make the pending request get changed by the enact confirmed account method
+					System.out.println("Request approved");
+				}else if(choice.equals("Reject Request")) {
+					//need to make opposite of confirm request method for this
+					System.out.println("Transfer rejected");
+				}else {
+					System.out.println("No action taken");
+				}
+			}
 		}
 		if (transfers.length<1) {
 			System.out.print("\nIt seems there are no pending requests for this account!\n\n");

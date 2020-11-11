@@ -113,30 +113,43 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 }
 
 	private void sendBucks() {
+		
+		//list users by id and username
 		User[] sendList = accountService.listAllUsers(currentUser);
 		for(User user:sendList) {
 			System.out.println(user.getId()+"  |  "+user.getUsername());
 		}
-		TransferDTO transfer = new TransferDTO();
+		
 		//prompts
-		int receiver = console.getUserInputInteger("\nPlease enter the user ID to send to : ");
+		int receiver = console.getUserInputInteger("\nPlease enter the user ID to send to ");
 		String amount = console.getUserInput("\nWhat amount would you like to send?");
-		System.out.println(currentUser.getToken());
-
 		BigDecimal transferAmount = new BigDecimal(amount);
-		System.out.println(currentUser.getToken());
 
 		//set transferDTO
+		TransferDTO transfer = new TransferDTO();
 		transfer.setFromAccount(Math.toIntExact(currentUser.getUser().getId()));
 		transfer.setToAccount(receiver);
 		transfer.setAmountTransferred(transferAmount);
-		System.out.println(currentUser.getToken());
 		System.out.println(accountService.sendTransfer(currentUser, transfer));
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+		User[] requestList = accountService.listAllUsers(currentUser);
+		for (User user:requestList) {
+			System.out.println(user.getId()+"    |    "+user.getUsername());
+		}
 		
+		//prompts
+		int sender = console.getUserInputInteger("\nPlease enter the user ID to request from ");
+		String amount = console.getUserInput("\nWhat amount are you requesting");
+		BigDecimal transferAmount = new BigDecimal(amount);
+		
+		//set transferDTO
+		TransferDTO transfer = new TransferDTO();
+		transfer.setFromAccount(sender);
+		transfer.setToAccount(Math.toIntExact(currentUser.getUser().getId()));
+		transfer.setAmountTransferred(transferAmount);
+		System.out.println(accountService.sendTransfer(currentUser, transfer));		
 	}
 	
 	private void exitProgram() {

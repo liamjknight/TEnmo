@@ -61,16 +61,29 @@ public class AccountService {
 		headers.setBearerAuth(user.getToken());
 	    //headers.setContentType(MediaType.APPLICATION_JSON);
 	    if (transfer == null) {
-	    	System.out.print("EsfsdfsdfsdfRROR");
+	    	System.out.print("ERROR");
+	    	return null;
 	    }
 		HttpEntity<TransferDTO> entity = new HttpEntity<>(transfer,headers);
-		try {
-		transferReturn = restTemplate.postForObject(BASE_SERVICE_URL + "transfers/send/", entity, Transfer.class);
-		return transferReturn;
-		} catch (Exception e){
-			System.out.print("ERROR");
-			return null;
+		
+		if (transfer.getFromAccount()==Math.toIntExact(user.getUser().getId())){
+			try {
+				transferReturn = restTemplate.postForObject(BASE_SERVICE_URL + "transfers/send/", entity, Transfer.class);
+				return transferReturn;
+			} catch (Exception e){
+					System.out.print("ERROR");
+					return null;
+			}
 		}
+		else {
+			try{
+				transferReturn = restTemplate.postForObject(BASE_SERVICE_URL+"transfers/request/", entity, Transfer.class);
+				return transferReturn;
+					} catch(Exception e) {
+							System.out.print("ERROR");
+							return null;
+					}
+			}
 	}
 	
 	public User[] listAllUsers(AuthenticatedUser user){

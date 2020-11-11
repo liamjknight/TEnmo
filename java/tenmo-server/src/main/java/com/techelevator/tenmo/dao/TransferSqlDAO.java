@@ -54,48 +54,52 @@ public class TransferSqlDAO implements TransferDAO {
 	
 	@Override
 	public Transfer sendTransfer(int userId, TransferDTO transfer) {
+		//if they are sending then 2, if its a request, 1
+		int requestSend = (userId==transfer.getFromAccount()?2:1);
+		
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
 					 			"VALUES(?, ?, ?, ?, ?);";
 		Transfer result = new Transfer();
 		
 		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds
 		// transfer result initialised
-		if(accountDAO.getBalance(transfer.getFromAccount()).subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0) {
-			int raw = jdbcTemplate.update(sqlForTransfer, 2, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
-
-			//Initial transfer created in database as part of SQL transaction
-			//Then transfer is copied from the database back to "result" 
-			//successful transfer must be "true" (meaning the money has been moved)
-			//then transfer object is returned and transaction committed.
-			
+		
+		//true if sufficient
+		boolean sufficientFunds = accountDAO.getBalance(transfer.getFromAccount()).
+				subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0;
+		
+		if(sufficientFunds&(requestSend==2)) {
+			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());			
 				if(raw==1) {
 					String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
 					SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
-					if (rowSet.next()) {
-							result = mapRowToTransfer(rowSet);
-							} 
-						else {
-							System.out.print("ERROR");
-							}
+					if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
+						else {System.out.print("ERROR");}
 							//******************************************************************************//
 								boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
 							//******************************************************************************//
-						if(successfulTransfer) {
-							return result;
-							}
-						else {
-							return null;
-							}
-			} else {	
-				return null;
-					}	
-		} else {
+									if(successfulTransfer) {return result;}
+										else {return null;}
+						} else {return null;}	
+					}
+		else if (requestSend==1) {
+			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 1, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
+			if(raw==1) {
+				String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
+				SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
+				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
+					else {System.out.print("ERROR");}
+						//******************************************************************************//
+							boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
+						//******************************************************************************//
+								if(successfulTransfer) {return result;}
+									else {return null;}
+					} else {return null;}	
+		}
 			return null;
 				}
 		
-		
-		
-	}
+
 	@Override
 	public Transfer requestTransfer(TransferDTO transfer) {
 		return null;

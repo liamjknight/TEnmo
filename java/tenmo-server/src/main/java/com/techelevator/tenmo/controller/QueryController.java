@@ -35,7 +35,7 @@ import com.techelevator.tenmo.model.User;
 import io.jsonwebtoken.Jwt;
 
 @RestController
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RequestMapping(path="/")
 public class QueryController {
 	
@@ -89,26 +89,18 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="transfers/request/", method=RequestMethod.POST)//I need to build out SQL
-	public Transfer requestTransfer(@Valid @RequestBody TransferDTO transfer) {
-		return transferDAO.requestTransfer(transfer);
+	public Transfer requestTransfer(@RequestBody TransferDTO transfer, HttpServletRequest request) {
+		Principal token = request.getUserPrincipal();
+		int userId = userDAO.findIdByUsername(token.getName());
+		return transferDAO.sendTransfer(userId, transfer);
 	}
 	
-	/*
-	 * 
-	 * BLLLLLLLLLAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-	 * 
-	 * 
-	 * 
-	 */
 	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
-	public Transfer sendTransfer(@RequestBody TransferDTO transfer, Principal principal) {
-		//Principal token = request.getUserPrincipal();
-		//System.out.print(token.getName());
-		//int userId = userDAO.findIdByUsername(token.getName());
-		//return transferDAO.sendTransfer(userId, transfer);
-		System.out.print(transfer.getFromAccount());
-		System.out.print(transfer.getAmountTransferred());
-		return transferDAO.sendTransfer(transfer.getFromAccount(), transfer);
+	public Transfer sendTransfer(@RequestBody TransferDTO transfer, HttpServletRequest request) {
+		Principal token = request.getUserPrincipal();
+		System.out.print(token.getName());
+		int userId = userDAO.findIdByUsername(token.getName());
+		return transferDAO.sendTransfer(userId, transfer);
 	}
 	
 	@RequestMapping(path="transfers/pending/", method=RequestMethod.PUT)

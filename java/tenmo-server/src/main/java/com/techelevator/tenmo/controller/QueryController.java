@@ -102,8 +102,8 @@ public class QueryController {
 		return transferDAO.sendTransfer(userId, transfer);
 	}
 	
-	@RequestMapping(path="transfers/{id}/approve/", method=RequestMethod.POST)
-	public Transfer approveTransfer(@PathVariable int id, @RequestBody HttpServletRequest request) {
+	@RequestMapping(path="transfers/{id}/approve/", method=RequestMethod.GET)
+	public Transfer approveTransfer(HttpServletRequest request, @PathVariable int id) {
 		Principal token = request.getUserPrincipal();
 		int userId = userDAO.findIdByUsername(token.getName());
 		Transfer transfer = transferDAO.getTransferById(userId, id);
@@ -117,7 +117,7 @@ public class QueryController {
 	}
 	
 	@RequestMapping(path="transfers/{id}/deny/", method=RequestMethod.POST)
-	public Transfer denyTransfer(@PathVariable int id, HttpServletRequest request) {
+	public Transfer denyTransfer(HttpServletRequest request, @PathVariable int id) {
 		Principal token = request.getUserPrincipal();
 		int userId = userDAO.findIdByUsername(token.getName());
 		transferDAO.denyRequest(id);

@@ -29,13 +29,13 @@ public class Transfer {
 		String transStatus = "";
 		String transType = "";
 		
-		if (this.transferStatus==1) {transStatus = "Pending";} 
-		else if (this.transferStatus==2) {transStatus = "Approved";} 
-		else  if (this.transferStatus==3){transStatus = "Rejected";} 
+		if (this.getTransferStatus()==1) {transStatus = "Pending";} 
+		else if (this.getTransferStatus()==2) {transStatus = "Approved";} 
+		else  if (this.getTransferStatus()==3){transStatus = "Rejected";} 
 		else {transStatus = "ERROR";}
 		
-		if (this.transferType==1) {transType = "Request";} 
-		else if (this.transferType==2) {transType = "Send";}
+		if (this.getTransferType()==1) {transType = "Request";} 
+		else if (this.getTransferType()==2) {transType = "Send";}
 		else {transStatus = "ERROR";}
 		
 		return "\n------------------------------" +
@@ -56,6 +56,16 @@ public class Transfer {
 						"\n";
 	}
 	
+	public String toStringPendingRequest() {
+		if(this.getTransferType()==2) {
+		return "Transaction ID: " + id + "\n" + toAccount.getUsername() + 
+				" requests $" + amountTransferred + ".\n"; 
+		}
+		else{
+			return "Transaction ID: " + id + "\n" + 
+					"You still have not confirmed $" + amountTransferred + " payment.\n";
+		}
+	}
 	public int getTransferId() {
 		return id;
 	}

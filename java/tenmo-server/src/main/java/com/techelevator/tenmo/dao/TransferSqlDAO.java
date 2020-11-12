@@ -54,64 +54,55 @@ public class TransferSqlDAO implements TransferDAO {
 	
 	@Override
 	public Transfer sendTransfer(int userId, TransferDTO transfer) {
-		
 		//if they are sending then 2, if its a request, 1
 		int requestSend = (userId==transfer.getFromAccount()?2:1);
 		String sqlForTransfer = "INSERT INTO transfers(transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
 					 			"VALUES(?, ?, ?, ?, ?);";
 		Transfer result = new Transfer();
-		
 		// COMPARE (sender - transfer amount)>0 , i.e. sufficient funds		
-		//true if sufficient
 		boolean sufficientFunds = accountDAO.getBalance(transfer.getFromAccount()).
 				subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0;
-		
+		//SUFFICIENT FUNDS + SENDING
 		if(sufficientFunds&(requestSend==2)) {
 			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());			
 				if(raw==1) {
 					String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
 					SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
-					if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
-						else {System.out.print("ERROR");}
-							//******************************************************************************//
-								boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
-							//******************************************************************************//
-									if(successfulTransfer) {return result;}
-										else {return null;}
-						} else {return null;}	
-					}
-		else if (requestSend==1) {
-			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 1, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
-			if(raw==1) {
-				String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
-				SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
 				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
 					else {System.out.print("ERROR");}
-						//******************************************************************************//
-							//boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
-						//******************************************************************************//
-								//if(successfulTransfer) {return result;}
-									//else {return null;}
+							boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
+								if(successfulTransfer) 
+									{return result;}
+										else {return null;}
+						} else {return null;}	}
+		//REQUESTING PAYMENT
+		else if (requestSend==1) {
+			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 1, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
+				if(raw==1) {
+					String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
+					SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
+				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
+					else {System.out.print("ERROR");}
 					} else {return null;}	
 		}return null;}
 		
-
 	@Override
-	public Transfer requestTransfer(TransferDTO transfer) {
-		return null;
+	public boolean approveRequest(int id) {
+		String sql = "UPDATE transfers SET transfer_status_id = 2 "+
+				"WHERE transfer_id=? AND transfer_status_id = 1";
+		int raw = jdbcTemplate.update(sql,id);
+		if(raw==1) {return true;}
+			else {return false;}
 	}
-	@Override
-	public boolean approveRequest(int id, boolean accept) {
-		String sql = "";//this needs to be a update sql statement with a ? for the transfer id and transfer status.
-		
-		if(accept) {
-			//set transfer to accepted
-			return true;
-		}else {
-			//set transfer to rejected
-			return false;
-		}
+	
+	public boolean denyRequest(int id) {
+		String sql = "UPDATE transfers SET transfer_status_id = 3 "+
+				"WHERE transfer_id=? AND transfer_status_id = 1";
+		int raw = jdbcTemplate.update(sql,id);
+		if(raw==1) {return true;}
+			else {return false;}
 	}
+	
 	@Override
 	public List<Transfer> pendingTransfers(int id) {
 		List<Transfer> userTransfers = new ArrayList<Transfer>();

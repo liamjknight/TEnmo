@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import java.math.BigDecimal;
-import java.security.Principal;
+//import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 
-import com.techelevator.tenmo.model.Account;
+//import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.SecureUserDTO;
 import com.techelevator.tenmo.model.TransferDTO;
-import com.techelevator.tenmo.model.User;
+//import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.UserNotActivatedException;
 
 @Service
@@ -77,9 +77,10 @@ public class AccountSqlDAO implements AccountDAO {
 			System.out.print("ERROR");
 			jdbcTemplate.update("ROLLBACK");
 		}
+		jdbcTemplate.update("ROLLBACK");
 		return result;
 	}
-	
+	/*
 	private Account mapRowToAccount(SqlRowSet input) {
 		Account acc = new Account();
 		acc.setAccountId(input.getInt("account_id"));
@@ -87,6 +88,7 @@ public class AccountSqlDAO implements AccountDAO {
 		acc.setBalance(input.getBigDecimal("balance"));
 		return acc;
 	}
+	*/
 	private SecureUserDTO mapRowToSecureUser(SqlRowSet input) {
 		SecureUserDTO user = new SecureUserDTO();
 		user.setId(input.getLong("user_id"));

@@ -101,24 +101,54 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			System.out.print("\nIt seems there are no transfers for this account!\n\n");
 		}
 	}
+	
+	private void checkForPending() {
+		Transfer[] transfers = accountService.getPendingRequests(currentUser);
+		for(Transfer transfer:transfers) {
+			if (transfer.getFromAccount().getId()==currentUser.getUser().getId()) {
+				System.out.print(transfer.toStringPendingRequest());
+				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request"});
+				
+			}
+		}
+	}
 
 	private void viewPendingRequests() {
 		Transfer[] transfers = accountService.getPendingRequests(currentUser);
+		int count = 0;
 		for(Transfer transfer:transfers) {
-			System.out.print(transfer.toString());
-			if(transfer.getFromAccount().getId()==currentUser.getUser().getId()) {// this checks if the account the money comes from is the same as the current account looking aat the pending transfer so the requester cannot confirm their own request.
-				//here is where we can approve or deny transfers
-				System.out.println("Would you like to confirm or deny this pending transfer?");
-				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request"});
+			//USER HAS REQUESTED PAYMENT
+			if(transfer.getToAccount().getId()==currentUser.getUser().getId()) {
+				count++;
+				if (count==1) {
+					System.out.print("You are still waiting on these payments:\n");
+				}
+				System.out.print(transfer.toStringPendingRequest()); 
+			}
+		}
+		count=0;
+		System.out.print("\n\n");
+		for(Transfer transfer:transfers) {
+			//SOMEBODY HAS REQUESTED FROM USER
+			if(transfer.getFromAccount().getId()==currentUser.getUser().getId()) {
+				count++;
+				if (count==1) {
+					System.out.print("There are requested payments from you : \n");
+				}
+				System.out.print(transfer.toStringPendingRequest());
+				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request","Back to main menu"});
 				
 				if(choice.equals("Confirm Request")) {
-					//here we have to make the pending request get changed by the enact confirmed account method
-					System.out.println("Request approved");
+					accountService.enactTransfer(currentUser, transfer.getTransferId());
+					System.out.println("Request approved.\n");
+					accountService.getBalance(currentUser);
 				}else if(choice.equals("Reject Request")) {
-					//need to make opposite of confirm request method for this
+					accountService.denyTransfer(currentUser, transfer.getTransferId());
 					System.out.println("Transfer rejected");
-				}else {
+				}else if(choice.equals("Do Nothing")){
 					System.out.println("No action taken");
+				} else {
+					mainMenu();
 				}
 			}
 		}
@@ -145,7 +175,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transfer.setFromAccount(Math.toIntExact(currentUser.getUser().getId()));
 		transfer.setToAccount(receiver);
 		transfer.setAmountTransferred(transferAmount);
-		System.out.println(accountService.sendTransfer(currentUser, transfer));
+		System.out.println(accountService.sendTransfer(currentUser, transfer).toString());
 	}
 
 	private void requestBucks() {
@@ -164,7 +194,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		transfer.setFromAccount(sender);
 		transfer.setToAccount(Math.toIntExact(currentUser.getUser().getId()));
 		transfer.setAmountTransferred(transferAmount);
-		System.out.println(accountService.sendTransfer(currentUser, transfer));		
+		System.out.println(accountService.sendTransfer(currentUser, transfer).toString());		
 	}
 	
 	private void exitProgram() {

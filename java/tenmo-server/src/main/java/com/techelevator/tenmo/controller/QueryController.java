@@ -98,14 +98,30 @@ public class QueryController {
 	@RequestMapping(path="transfers/send/", method=RequestMethod.POST)
 	public Transfer sendTransfer(@RequestBody TransferDTO transfer, HttpServletRequest request) {
 		Principal token = request.getUserPrincipal();
-		System.out.print(token.getName());
 		int userId = userDAO.findIdByUsername(token.getName());
 		return transferDAO.sendTransfer(userId, transfer);
 	}
 	
-	@RequestMapping(path="transfers/pending/", method=RequestMethod.PUT)
-	public boolean approveTransfer(@RequestBody int id, @RequestBody boolean accept) {
-		return transferDAO.approveRequest(id, accept);
+	@RequestMapping(path="transfers/{id}/approve/", method=RequestMethod.POST)
+	public Transfer approveTransfer(@PathVariable int id, @RequestBody HttpServletRequest request) {
+		Principal token = request.getUserPrincipal();
+		int userId = userDAO.findIdByUsername(token.getName());
+		Transfer transfer = transferDAO.getTransferById(userId, id);
+		TransferDTO dto = new TransferDTO();
+			dto.setFromAccount(Math.toIntExact(transfer.getFromAccount().getId()));
+			dto.setToAccount(Math.toIntExact(transfer.getToAccount().getId()));
+			dto.setAmountTransferred(transfer.getAmountTransferred());
+		accountDAO.enactSuccessfulTransfer(dto);
+		transferDAO.approveRequest(id);
+		return transferDAO.getTransferById(userId, id);
+	}
+	
+	@RequestMapping(path="transfers/{id}/deny/", method=RequestMethod.POST)
+	public Transfer denyTransfer(@PathVariable int id, HttpServletRequest request) {
+		Principal token = request.getUserPrincipal();
+		int userId = userDAO.findIdByUsername(token.getName());
+		transferDAO.denyRequest(id);
+		return transferDAO.getTransferById(userId, id);
 	}
 	
 }

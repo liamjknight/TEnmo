@@ -54,6 +54,34 @@ public class AccountService {
 		ResponseEntity<Transfer> response = restTemplate.exchange(BASE_SERVICE_URL + "transfers/{" + id + "}/",  HttpMethod.GET, entity, Transfer.class);
 		return response.getBody();
 	}
+	public Transfer enactTransfer(AuthenticatedUser user, int id) {
+		Transfer transferReturn;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(user.getToken());
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		try {
+			transferReturn = restTemplate.postForObject(BASE_SERVICE_URL + "transfers/{"+id+"}/approve/", entity, Transfer.class);
+			return transferReturn;
+		} catch (Exception e) {
+			System.out.print("Insufficient funds. You have been fined $500.00.\n");
+			return null;
+		}
+		
+	}
+	public Transfer denyTransfer(AuthenticatedUser user, int id) {
+		Transfer transferReturn;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(user.getToken());
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		try {
+			transferReturn = restTemplate.postForObject(BASE_SERVICE_URL + "transfers/{"+id+"}/deny/", entity, Transfer.class);
+			return transferReturn;
+		} catch (Exception e) {
+			System.out.print("Unfortunately we sent your money to them anyway.\n");
+			return null;
+		}
+		
+	}
 	
 	public Transfer sendTransfer(AuthenticatedUser user,TransferDTO transfer) {
 		Transfer transferReturn;

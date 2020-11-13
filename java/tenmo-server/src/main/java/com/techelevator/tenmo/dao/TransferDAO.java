@@ -9,7 +9,7 @@ import com.techelevator.tenmo.model.User;
 public interface TransferDAO {
 	
 	List<Transfer> listTransfers(int id);
-	Transfer getTransferById(int userId, int transId);
+	List<Transfer> getTransferById(int userId, int transId);
 	Transfer sendTransfer(int userId, TransferDTO transfer);
 	List<Transfer> pendingTransfers(int id);
 	User findUsernameById(int id);

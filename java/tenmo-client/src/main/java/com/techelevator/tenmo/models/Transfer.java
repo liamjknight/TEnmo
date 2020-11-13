@@ -57,14 +57,14 @@ public class Transfer {
 	}
 	
 	public String toStringPendingRequest() {
-		if(this.getTransferType()==2) {
+		//if(true) {
 		return "Transaction ID: " + id + "\n" + toAccount.getUsername() + 
 				" requests $" + amountTransferred + ".\n"; 
-		}
-		else{
-			return "Transaction ID: " + id + "\n" + 
-					"You still have not confirmed $" + amountTransferred + " payment.\n";
-		}
+		//}
+		//else{
+		//	return "Transaction ID: " + id + "\n" + 
+		//			"You still have not confirmed $" + amountTransferred + " payment.\n";
+		//}
 	}
 	public int getTransferId() {
 		return id;

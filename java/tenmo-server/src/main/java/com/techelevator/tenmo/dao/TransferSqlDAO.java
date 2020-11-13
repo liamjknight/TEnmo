@@ -35,21 +35,30 @@ public class TransferSqlDAO implements TransferDAO {
 		}
 		return userTransfers;
 	}
+	@Override
+	public List<Transfer> pendingTransfers(int id) {
+		List<Transfer> userTransfers = new ArrayList<Transfer>();
+		String sql = "SELECT * FROM transfers " + 
+				 "WHERE (account_from = ? OR account_to = ?) AND transfer_status_id = 1";
+		
+		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id, id);
+		while(result.next()) {
+			userTransfers.add(mapRowToTransfer(result));
+		}
+		return userTransfers;
+	}
 	
 	@Override
-	public Transfer getTransferById(int userId, int id){
-		Transfer result = new Transfer();
+	public List<Transfer> getTransferById(int userId, int transId){
+		List<Transfer> idTransfer = new ArrayList<Transfer>();
 		String sql = "SELECT * FROM transfers " +
 					 "WHERE transfer_id = ? AND (account_from = ? OR account_to = ?)";
 		
-		SqlRowSet raw = jdbcTemplate.queryForRowSet(sql, id, userId, userId);
-		if (raw.next()) {
-			result = mapRowToTransfer(raw);
-			
-		} else {
-			throw new TransferNotFoundError();
+		SqlRowSet raw = jdbcTemplate.queryForRowSet(sql, transId, userId, userId);
+		while (raw.next()) {
+			idTransfer.add(mapRowToTransfer(raw));
 		}
-		return result;
+		return idTransfer;
 	}
 	
 	@Override
@@ -84,8 +93,8 @@ public class TransferSqlDAO implements TransferDAO {
 				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
 					else {System.out.print("ERROR");}
 					} else {return null;}	
-		}return null;}
-		
+		}return null;
+	}
 	@Override
 	public boolean approveRequest(int id) {
 		String sql = "UPDATE transfers SET transfer_status_id = 2 "+
@@ -94,26 +103,12 @@ public class TransferSqlDAO implements TransferDAO {
 		if(raw==1) {return true;}
 			else {return false;}
 	}
-	
 	public boolean denyRequest(int id) {
 		String sql = "UPDATE transfers SET transfer_status_id = 3 "+
 				"WHERE transfer_id=? AND transfer_status_id = 1";
 		int raw = jdbcTemplate.update(sql,id);
 		if(raw==1) {return true;}
 			else {return false;}
-	}
-	
-	@Override
-	public List<Transfer> pendingTransfers(int id) {
-		List<Transfer> userTransfers = new ArrayList<Transfer>();
-		String sql = "SELECT * FROM transfers " + 
-				 "WHERE (account_from = ? OR account_to = ?) AND transfer_status_id = 1";
-		
-		SqlRowSet result = jdbcTemplate.queryForRowSet(sql, id, id);
-		while(result.next()) {
-			userTransfers.add(mapRowToTransfer(result));
-		}
-		return userTransfers;
 	}
 	public Transfer mapRowToTransfer(SqlRowSet input) {		
 		Transfer result = new Transfer();

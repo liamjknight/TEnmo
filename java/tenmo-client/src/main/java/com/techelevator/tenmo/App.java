@@ -61,6 +61,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		System.out.println("*********************");
 		
 		registerAndLogin();
+		viewPendingRequests(0);
 		mainMenu();
 	}
 
@@ -72,7 +73,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			} else if(MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS.equals(choice)) {
 				viewTransferHistory();
 			} else if(MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS.equals(choice)) {
-				viewPendingRequests();
+				viewPendingRequests(1);
 			} else if(MAIN_MENU_OPTION_SEND_BUCKS.equals(choice)) {
 				sendBucks();
 			} else if(MAIN_MENU_OPTION_REQUEST_BUCKS.equals(choice)) {
@@ -102,40 +103,46 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 	}
 	
-	private void checkForPending() {
+	/*private void checkForPending() {
 		Transfer[] transfers = accountService.getPendingRequests(currentUser);
 		for(Transfer transfer:transfers) {
 			if (transfer.getFromAccount().getId()==currentUser.getUser().getId()) {
-				System.out.print(transfer.toStringPendingRequest());
-				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request"});
-				
-			}
-		}
-	}
-
-	private void viewPendingRequests() {
+				System.out.print(transfer.toStringPendingTheirRequest());
+				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request"});}}}
+*/
+	private void viewPendingRequests(int login) {
 		Transfer[] transfers = accountService.getPendingRequests(currentUser);
+		//count is to only write the header/title once per Transfer[]
 		int count = 0;
+		//login will be zero upon just logging in
+		if (login==1) {
 		for(Transfer transfer:transfers) {
 			//USER HAS REQUESTED PAYMENT
 			if(transfer.getToAccount().getId()==currentUser.getUser().getId()) {
 				count++;
 				if (count==1) {
-					System.out.print("You are still waiting on these payments:\n");
+					System.out.print("You are still waiting on these payments : \n\n");
 				}
-				System.out.print(transfer.toStringPendingRequest()); 
+				System.out.print(transfer.toStringPendingYourRequest()); 
 			}
 		}
+		}
 		count=0;
-		System.out.print("\n\n");
+		System.out.print("\n");
 		for(Transfer transfer:transfers) {
 			//SOMEBODY HAS REQUESTED FROM USER
 			if(transfer.getFromAccount().getId()==currentUser.getUser().getId()) {
 				count++;
 				if (count==1) {
-					System.out.print("There are requested payments from you : \n");
+					System.out.print("There are requested payments from you : \n\n");
+				}if(login==0) {
+					String anotherChoice = (String)console.getChoiceFromOptions(new String[] {"Ignore and log in","Show me requests"});
+					if(anotherChoice.equals("Ignore and log in")) {
+						mainMenu();
+					}
 				}
-				System.out.print(transfer.toStringPendingRequest());
+				System.out.print(transfer.toStringPendingTheirRequest());
+				System.out.print("\n");
 				String choice = (String)console.getChoiceFromOptions(new String[] {"Do Nothing", "Confirm Request", "Reject Request","Back to main menu"});
 				
 				if(choice.equals("Confirm Request")) {
@@ -152,9 +159,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				}
 			}
 		}
-		if (transfers.length<1) {
+		if (transfers.length<1&login==1) {
 			System.out.print("\nIt seems there are no pending requests for this account!\n\n");
 		}
+		login=1;
 }
 
 	private void sendBucks() {

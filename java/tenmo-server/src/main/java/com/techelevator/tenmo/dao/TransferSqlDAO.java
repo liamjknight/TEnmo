@@ -73,12 +73,15 @@ public class TransferSqlDAO implements TransferDAO {
 				subtract(transfer.getAmountTransferred()).compareTo(new BigDecimal(0))>=0;
 		//SUFFICIENT FUNDS + SENDING
 		if(sufficientFunds&(requestSend==2)) {
-			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 2, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());			
+			int raw = jdbcTemplate.update(sqlForTransfer, 
+					requestSend, 2, transfer.getFromAccount(), 
+					transfer.getToAccount(), transfer.getAmountTransferred());			
 				if(raw==1) {
 					String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
 					SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
-				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
-					else {System.out.print("ERROR");}
+				if (rowSet.next()) {
+					result = mapRowToTransfer(rowSet);
+					} else {System.out.print("ERROR");}
 							boolean successfulTransfer = accountDAO.enactSuccessfulTransfer(transfer);
 								if(successfulTransfer) 
 									{return result;}
@@ -86,14 +89,19 @@ public class TransferSqlDAO implements TransferDAO {
 						} else {return null;}	}
 		//REQUESTING PAYMENT
 		else if (requestSend==1) {
-			int raw = jdbcTemplate.update(sqlForTransfer, requestSend, 1, transfer.getFromAccount(), transfer.getToAccount(), transfer.getAmountTransferred());
+			int raw = jdbcTemplate.update(sqlForTransfer, 
+					requestSend, 1, transfer.getFromAccount(), 
+					transfer.getToAccount(), transfer.getAmountTransferred());
 				if(raw==1) {
 					String sqlToGetTransfer = "SELECT * FROM transfers WHERE transfer_id = (SELECT max(transfer_id) FROM transfers WHERE account_from = ?)";
 					SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlToGetTransfer, transfer.getFromAccount());
-				if (rowSet.next()) {result = mapRowToTransfer(rowSet);} 
-					else {System.out.print("ERROR");}
-					} else {return null;}	
-		}return null;
+				if (rowSet.next()) {
+					result = mapRowToTransfer(rowSet);
+					} else {System.out.print("ERROR");}
+				return result;
+					} 	
+		}
+		return null;
 	}
 	@Override
 	public boolean approveRequest(int id) {

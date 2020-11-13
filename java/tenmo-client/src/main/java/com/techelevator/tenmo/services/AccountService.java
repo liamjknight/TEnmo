@@ -79,7 +79,7 @@ public class AccountService {
 	    if (transfer == null) {System.out.print("ERROR");
 	    						return null;}
 		HttpEntity<TransferDTO> entity = new HttpEntity<>(transfer,headers);
-		
+		// IF (CURRENT USER IS SENDING MONEY)
 		if (transfer.getFromAccount()==Math.toIntExact(user.getUser().getId())){
 			try {transferReturn = restTemplate.postForObject(BASE_SERVICE_URL + "transfers/send/", entity, Transfer.class);
 				return transferReturn;}

@@ -56,15 +56,13 @@ public class Transfer {
 						"\n";
 	}
 	
-	public String toStringPendingRequest() {
-		//if(true) {
+	public String toStringPendingTheirRequest() {
 		return "Transaction ID: " + id + "\n" + toAccount.getUsername() + 
 				" requests $" + amountTransferred + ".\n"; 
-		//}
-		//else{
-		//	return "Transaction ID: " + id + "\n" + 
-		//			"You still have not confirmed $" + amountTransferred + " payment.\n";
-		//}
+	}
+	public String toStringPendingYourRequest() {
+				return "Transaction ID: " + id + "\n" + fromAccount.getUsername() +
+						" still have not confirmed $" + amountTransferred + " payment.\n";
 	}
 	public int getTransferId() {
 		return id;

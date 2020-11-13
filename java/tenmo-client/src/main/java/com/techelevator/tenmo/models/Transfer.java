@@ -62,7 +62,7 @@ public class Transfer {
 	}
 	public String toStringPendingYourRequest() {
 				return "Transaction ID: " + id + "\n" + fromAccount.getUsername() +
-						" still have not confirmed $" + amountTransferred + " payment.\n";
+						" still has not confirmed $" + amountTransferred + " payment.\n";
 	}
 	public int getTransferId() {
 		return id;
